@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="using:EasyNotch.Controls"
+             x:Class="EasyNotch.Pages.MixerPage">
+  <Grid RowDefinitions="Auto,*">
+    <!-- Device + quick mutes -->
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+      <TextBlock x:Name="DeviceName" FontSize="14" Foreground="{StaticResource Sub}" VerticalAlignment="Center" Margin="0,0,10,0"
+                 MaxWidth="360" TextTrimming="CharacterEllipsis"/>
+      <Button x:Name="SpeakerMute" Classes="icon" FontSize="19" Click="SpeakerMute_Click"/>
+      <Button x:Name="MicMute" Classes="icon" FontSize="19" Click="MicMute_Click"/>
+    </StackPanel>
+
+    <Grid Grid.Row="1" Margin="0,4,0,0" ColumnDefinitions="Auto,Auto,*">
+      <!-- Master -->
+      <StackPanel VerticalAlignment="Center" Margin="12,0,24,0">
+        <c:Knob x:Name="Master" Width="116" Height="116" ToolTip.Tip="Drag up or down, or scroll"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,6,0,0">
+          <TextBlock x:Name="MasterIcon" Classes="icon" FontSize="20"/>
+          <TextBlock x:Name="MasterValue" FontSize="17" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+      </StackPanel>
+
+      <Border Grid.Column="1" Width="1" Background="{StaticResource Line}" Margin="0,6"/>
+
+      <!-- Per-app faders -->
+      <TextBlock x:Name="NoApps" Grid.Column="2" Text="Apps appear here while they're playing sound."
+                 FontSize="13" Foreground="{StaticResource Sub}" VerticalAlignment="Center" Margin="24,0,0,0" TextWrapping="Wrap"/>
+      <ScrollViewer x:Name="AppScroller" Grid.Column="2" Margin="12,0,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+        <StackPanel x:Name="Faders" Orientation="Horizontal"/>
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</UserControl>

@@ -1,6 +1,6 @@
 # Easy Notch
 
-A notch at the top of your Windows screen. Closed, it shows the time, what's playing
+A notch at the top of your screen, for Windows and Linux. Closed, it shows the time, what's playing
 (with a small equalizer) or your focus countdown. Click it to open; scroll over it,
 or click the dots on the right, to move between pages. Click outside, the handle at
 the top, or press Esc to close it.
@@ -63,6 +63,50 @@ dotnet publish -c Release -o out
 ```
 
 `EasyNotch.exe --open <clock|media|focus|notes|clipboard|mixer|settings>` starts with that page open.
+
+## Linux
+
+The Linux version has the same pages, settings and look, built with [Avalonia](https://avaloniaui.net).
+It runs through X11 or XWayland, so it works on Wayland desktops too. It was tested on KDE Plasma 6 (Wayland).
+
+### Install
+
+1. Download **EasyNotch-linux-x64.tar.gz** from the [latest release](https://github.com/danny19862025/easy-notch/releases/latest).
+2. Extract it and run `./install.sh` in the extracted folder. No root is needed: it installs to
+   `~/.local/opt/easy-notch`, adds Easy Notch to your app menu, and starts it.
+
+It starts when you log in (`./install.sh --no-autostart` skips that; it can also be switched in Settings).
+`~/.local/opt/easy-notch/uninstall.sh` removes it; add `--purge` to also delete your notes, clipboard and settings.
+
+### What it uses
+
+| | |
+|---|---|
+| **Now Playing** | MPRIS, the D-Bus interface Linux players share (Spotify, Firefox, Chrome, VLC, Elisa, mpv with mpv-mpris…). |
+| **Volume Mixer** | `pactl`, for PulseAudio or PipeWire (`pipewire-pulse`). Per-app faders show each app's icon when its theme has a PNG. |
+| **Focus noise** | Streamed to the sound server with `pacat` (or `pw-cat`). The end-of-phase chime is the freedesktop "complete" sound. |
+| **Clipboard** | Notices copies through XWayland/X11. Skips anything password managers mark as secret (`x-kde-passwordManagerHint`, which KeePassXC and others set). |
+| **Full-screen tuck** | Works for X11/XWayland apps (most games). On Wayland, KDE and GNOME already show an active full-screen window above the notch. |
+| **Tray icon** | StatusNotifierItem (KDE, and GNOME with the AppIndicator extension). |
+
+Data lives in `~/.local/share/easy-notch` (same files as on Windows). Network use is the same as on Windows,
+plus album art: when a player gives a web address for its artwork (Spotify does), Easy Notch downloads that image.
+Weather units follow your system locale, as on Windows (`en_US` shows °F).
+
+`easy-notch --open <clock|weather|media|focus|notes|clipboard|mixer|about|settings>` opens a page; if Easy Notch is
+already running, the running copy opens it.
+
+### Build
+
+Needs the .NET 10 SDK.
+
+```sh
+dotnet run --project linux
+linux/publish.sh            # artifacts/EasyNotch-linux-x64.tar.gz (self-contained, no .NET needed)
+```
+
+Notes, Weather and update checks share their code with the Windows app (`Services/`); the window,
+pages and Linux services live in `linux/`.
 
 ## Not built yet
 

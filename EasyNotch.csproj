@@ -20,6 +20,8 @@
     <SelfContained>true</SelfContained>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <!-- The Linux app (Avalonia) lives in linux/ and builds on its own. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);linux/**;artifacts/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
