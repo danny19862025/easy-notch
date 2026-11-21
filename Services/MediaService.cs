@@ -7,7 +7,8 @@ namespace EasyNotch.Services;
 
 public sealed record MediaState(
     string Title, string Artist, string App, bool IsPlaying,
-    TimeSpan Position, TimeSpan Duration, BitmapImage? Art, bool CanSeek);
+    TimeSpan Position, TimeSpan Duration, BitmapImage? Art, bool CanSeek,
+    bool CanShuffle = false, bool Shuffle = false, bool CanRepeat = false, Windows.Media.MediaPlaybackAutoRepeatMode Repeat = default);
 
 /// <summary>
 /// Follows whatever app Windows considers the current media session
@@ -104,7 +105,9 @@ public sealed class MediaService
                 props.Title ?? "", string.IsNullOrEmpty(props.Artist) ? props.AlbumArtist ?? "" : props.Artist,
                 FriendlyAppName(s.SourceAppUserModelId), playing,
                 pos < TimeSpan.Zero ? TimeSpan.Zero : pos, dur < TimeSpan.Zero ? TimeSpan.Zero : dur,
-                _art, info.Controls.IsPlaybackPositionEnabled && dur > TimeSpan.Zero);
+                _art, info.Controls.IsPlaybackPositionEnabled && dur > TimeSpan.Zero,
+                info.Controls.IsShuffleEnabled, info.IsShuffleActive ?? false,
+                info.Controls.IsRepeatEnabled, info.AutoRepeatMode ?? Windows.Media.MediaPlaybackAutoRepeatMode.None);
         }
         catch { _state = null; }
         Changed?.Invoke();
@@ -146,6 +149,24 @@ public sealed class MediaService
     }
 
     public async void PlayPause() { if (_session is { } s) await Try(() => s.TryTogglePlayPauseAsync().AsTask()); }
+    public async void ToggleShuffle()
+    {
+        if (_session is { } s && _state is { } st) await Try(() => s.TryChangeShuffleActiveAsync(!st.Shuffle).AsTask());
+    }
+
+    /// <summary>Off → repeat all → repeat one → off.</summary>
+    public async void CycleRepeat()
+    {
+        if (_session is not { } s || _state is not { } st) return;
+        var next = st.Repeat switch
+        {
+            Windows.Media.MediaPlaybackAutoRepeatMode.None => Windows.Media.MediaPlaybackAutoRepeatMode.List,
+            Windows.Media.MediaPlaybackAutoRepeatMode.List => Windows.Media.MediaPlaybackAutoRepeatMode.Track,
+            _ => Windows.Media.MediaPlaybackAutoRepeatMode.None,
+        };
+        await Try(() => s.TryChangeAutoRepeatModeAsync(next).AsTask());
+    }
+
     public async void Next() { if (_session is { } s) await Try(() => s.TrySkipNextAsync().AsTask()); }
     public async void Previous() { if (_session is { } s) await Try(() => s.TrySkipPreviousAsync().AsTask()); }
 

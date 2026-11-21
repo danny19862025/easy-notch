@@ -14,12 +14,35 @@ public sealed class ClipItem
     public string? Text { get; set; }
     /// <summary>File name of a PNG under the clips folder, for copied images.</summary>
     public string? Image { get; set; }
+    /// <summary>Paths, for copied files (Explorer copy).</summary>
+    public List<string>? Files { get; set; }
     public bool Pinned { get; set; }
     public DateTime CopiedAt { get; set; } = DateTime.Now;
 
-    public string Preview => Text is null ? "Image" : Text.Length > 300 ? Text[..300] + "…" : Text;
-    public string When => CopiedAt.Date == DateTime.Today ? CopiedAt.ToString("t") : CopiedAt.ToString("d MMM");
+    public string Kind => Image is not null ? "image" : Files is { Count: > 0 } ? "files" : IsLink ? "link" : "text";
+
+    bool IsLink => Text is { } t && !t.Contains('\n') && Uri.TryCreate(t.Trim(), UriKind.Absolute, out var u)
+                   && (u.Scheme == Uri.UriSchemeHttp || u.Scheme == Uri.UriSchemeHttps);
+
+    /// <summary>Card heading: a link's site, a file's name, or nothing for plain text.</summary>
+    public string Title => Kind switch
+    {
+        "link" => new Uri(Text!.Trim()).Host.Replace("www.", ""),
+        "files" => Files!.Count == 1 ? Path.GetFileName(Files[0]) : $"{Files.Count} files",
+        _ => "",
+    };
+
+    public string Preview => Kind switch
+    {
+        "image" => "",
+        "files" => Files!.Count == 1 ? Path.GetDirectoryName(Files[0]) ?? "" : string.Join(", ", Files.Select(Path.GetFileName)),
+        "link" => "",
+        _ => Text!.Length > 400 ? Text[..400] + "…" : Text,
+    };
+
+    public string When => TimeAgo.Of(CopiedAt);
     public BitmapImage? Thumb => Image is null ? null : ClipboardHistory.LoadThumb(Image);
+    public string SearchText => Text ?? (Files is null ? "" : string.Join(" ", Files));
 }
 
 /// <summary>
@@ -35,6 +58,8 @@ public sealed class ClipboardHistory
     static string IndexPath => Path.Combine(Settings.Dir, "clipboard.json");
 
     public ObservableCollection<ClipItem> Items { get; } = [];
+    /// <summary>While paused, nothing new is recorded.</summary>
+    public bool Paused { get; set; }
     string? _ignoreText;
 
     [DllImport("user32.dll", SetLastError = true)]
@@ -66,12 +91,20 @@ public sealed class ClipboardHistory
     {
         try
         {
-            if (IsClipboardFormatAvailable(ExcludeFormat)) return;
+            if (Paused || IsClipboardFormatAvailable(ExcludeFormat)) return;
             // Apps set CanIncludeInClipboardHistory = 0 for sensitive data; respect it.
             if (IsClipboardFormatAvailable(HistoryFormat) && Clipboard.GetData("CanIncludeInClipboardHistory") is MemoryStream ms
                 && ms.Length >= 4 && BitConverter.ToInt32(ms.ToArray(), 0) == 0) return;
 
-            if (Clipboard.ContainsText())
+            if (Clipboard.ContainsFileDropList())
+            {
+                var files = Clipboard.GetFileDropList().Cast<string>().ToList();
+                if (files.Count == 0) return;
+                var existing = Items.FirstOrDefault(i => i.Files is { } f && f.SequenceEqual(files));
+                if (existing is not null) Items.Remove(existing);
+                Insert(new ClipItem { Files = files, Pinned = existing?.Pinned ?? false });
+            }
+            else if (Clipboard.ContainsText())
             {
                 string t = Clipboard.GetText();
                 if (string.IsNullOrWhiteSpace(t) || t == _ignoreText) { _ignoreText = null; return; }
@@ -125,6 +158,12 @@ public sealed class ClipboardHistory
                 bmp.EndInit();
                 Clipboard.SetImage(bmp);
             }
+            else if (item.Files is { Count: > 0 } files)
+            {
+                var sc = new System.Collections.Specialized.StringCollection();
+                sc.AddRange(files.Where(File.Exists).ToArray());
+                if (sc.Count > 0) Clipboard.SetFileDropList(sc);
+            }
         }
         catch (COMException) { }
     }
@@ -154,7 +193,7 @@ public sealed class ClipboardHistory
         try
         {
             var list = JsonSerializer.Deserialize<List<ClipItem>>(File.ReadAllText(IndexPath)) ?? [];
-            foreach (var i in list.Where(i => i.Text is not null || (i.Image is not null && File.Exists(Path.Combine(Dir, i.Image)))))
+            foreach (var i in list.Where(i => i.Text is not null || i.Files is { Count: > 0 } || (i.Image is not null && File.Exists(Path.Combine(Dir, i.Image)))))
                 Items.Add(i);
         }
         catch { }
@@ -177,7 +216,7 @@ public sealed class ClipboardHistory
             var bmp = new BitmapImage();
             bmp.BeginInit();
             bmp.CacheOption = BitmapCacheOption.OnLoad;
-            bmp.DecodePixelHeight = 64;
+            bmp.DecodePixelHeight = 240;
             bmp.UriSource = new Uri(Path.Combine(Dir, file));
             bmp.EndInit();
             bmp.Freeze();
@@ -187,25 +226,3 @@ public sealed class ClipboardHistory
     }
 }
 
-public static class NotesStore
-{
-    static string FilePath => Path.Combine(Settings.Dir, "notes.txt");
-
-    public static string Load()
-    {
-        try { return File.ReadAllText(FilePath); } catch { return ""; }
-    }
-
-    public static void Save(string text)
-    {
-        try
-        {
-            Directory.CreateDirectory(Settings.Dir);
-            // Write-then-swap so a crash mid-save never leaves a half-written note.
-            string tmp = FilePath + ".tmp";
-            File.WriteAllText(tmp, text);
-            File.Move(tmp, FilePath, overwrite: true);
-        }
-        catch { }
-    }
-}

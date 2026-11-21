@@ -80,7 +80,7 @@ public sealed class FocusTimer
     {
         var ended = Phase;
         SystemSounds.Asterisk.Play();
-        if (ended == FocusPhase.Focus) { CompletedFocusSessions++; StartBreak(); }
+        if (ended == FocusPhase.Focus) { CompletedFocusSessions++; if (_settings.FocusMode == "zen") Stop(); else StartBreak(); }
         else Stop();
         PhaseEnded?.Invoke(ended);
     }

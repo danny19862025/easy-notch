@@ -3,15 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
-        <!-- The island is always dark, like a hardware notch; these are its colours. -->
-        <SolidColorBrush x:Key="IslandBg" Color="#FF111113"/>
-        <SolidColorBrush x:Key="IslandEdge" Color="#26FFFFFF"/>
+        <!-- The notch is always dark, like a hardware notch. -->
+        <SolidColorBrush x:Key="IslandBg" Color="#FF0A0A0B"/>
+        <SolidColorBrush x:Key="IslandEdge" Color="#FF26262B"/>
         <SolidColorBrush x:Key="Fg" Color="#FFF5F5F7"/>
-        <SolidColorBrush x:Key="Sub" Color="#FFA1A1AA"/>
-        <SolidColorBrush x:Key="Faint" Color="#FF63636B"/>
+        <SolidColorBrush x:Key="Sub" Color="#FF9A9AA3"/>
+        <SolidColorBrush x:Key="Faint" Color="#FF55555C"/>
         <SolidColorBrush x:Key="Hover" Color="#1AFFFFFF"/>
         <SolidColorBrush x:Key="Press" Color="#2EFFFFFF"/>
-        <SolidColorBrush x:Key="FieldBg" Color="#FF1E1E22"/>
+        <SolidColorBrush x:Key="FieldBg" Color="#FF1C1C1F"/>
+        <SolidColorBrush x:Key="CardBg" Color="#FF1A1A1D"/>
         <SolidColorBrush x:Key="Line" Color="#FF2C2C31"/>
         <SolidColorBrush x:Key="Accent" Color="#FF7DD3FC"/>
         <SolidColorBrush x:Key="Focus" Color="#FFFDBA74"/>
@@ -25,7 +26,6 @@
              Text colour and font are inherited from the window instead. -->
         <Style x:Key="Icon" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="{StaticResource Icons}"/>
-            <Setter Property="Foreground" Value="{StaticResource Fg}"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
@@ -53,7 +53,32 @@
                                 <Setter TargetName="b" Property="Background" Value="{StaticResource Press}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.35"/>
+                                <Setter Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Text-only button (mode switches, menus) -->
+        <Style x:Key="TextBtn" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource Sub}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="Transparent" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="{StaticResource Hover}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -79,67 +104,6 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="b" Property="Opacity" Value="0.85"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="b" Property="Opacity" Value="0.4"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Widget tab in the top bar -->
-        <Style x:Key="TabBtn" TargetType="RadioButton">
-            <Setter Property="Foreground" Value="{StaticResource Sub}"/>
-            <Setter Property="FontFamily" Value="{StaticResource Icons}"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="Width" Value="38"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Margin" Value="0,0,2,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="b" Background="Transparent" CornerRadius="15">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="{StaticResource Hover}"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="{StaticResource Press}"/>
-                                <Setter Property="Foreground" Value="{StaticResource Fg}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Segmented choice (noise type) -->
-        <Style x:Key="SegBtn" TargetType="RadioButton">
-            <Setter Property="Foreground" Value="{StaticResource Sub}"/>
-            <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Padding" Value="10,4"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="b" Background="Transparent" CornerRadius="11" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="{StaticResource Hover}"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="{StaticResource Press}"/>
-                                <Setter Property="Foreground" Value="{StaticResource Fg}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -180,14 +144,14 @@
             <Setter Property="SelectionBrush" Value="{StaticResource Accent}"/>
             <Setter Property="Background" Value="{StaticResource FieldBg}"/>
             <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="12,8"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border Background="{TemplateBinding Background}" CornerRadius="10">
                             <Grid>
-                                <TextBlock x:Name="hint" Text="{TemplateBinding Tag}" Foreground="{StaticResource Faint}"
+                                <TextBlock x:Name="hint" Text="{TemplateBinding Tag}" Foreground="{StaticResource Sub}"
                                            Margin="{TemplateBinding Padding}" Padding="2,0" IsHitTestVisible="False" Visibility="Collapsed"/>
                                 <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                             </Grid>
@@ -202,10 +166,35 @@
             </Setter>
         </Style>
 
-        <!-- Thin scrollbar -->
+        <!-- Borderless text box (note editor) -->
+        <Style x:Key="BareField" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+            <Setter Property="CaretBrush" Value="{StaticResource Fg}"/>
+            <Setter Property="SelectionBrush" Value="{StaticResource Accent}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <TextBlock x:Name="hint" Text="{TemplateBinding Tag}" Foreground="{StaticResource Faint}"
+                                       Padding="2,0" IsHitTestVisible="False" Visibility="Collapsed"/>
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="hint" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Thin scrollbars, both directions -->
         <Style TargetType="ScrollBar">
-            <Setter Property="Width" Value="6"/>
-            <Setter Property="MinWidth" Value="6"/>
+            <Setter Property="Width" Value="5"/>
+            <Setter Property="MinWidth" Value="5"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ScrollBar">
@@ -223,9 +212,34 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="MinWidth" Value="0"/>
+                    <Setter Property="Height" Value="5"/>
+                    <Setter Property="MinHeight" Value="5"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Track x:Name="PART_Track" IsDirectionReversed="False">
+                                    <Track.Thumb>
+                                        <Thumb>
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Border Background="{StaticResource Line}" CornerRadius="3"/>
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                </Track>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <!-- Thin seek bar -->
+        <!-- Thin horizontal seek bar -->
         <Style x:Key="Seek" TargetType="Slider">
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="IsMoveToPointEnabled" Value="True"/>
@@ -240,7 +254,69 @@
                                     <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
                                         <RepeatButton.Template>
                                             <ControlTemplate TargetType="RepeatButton">
-                                                <Border Height="4" CornerRadius="2" Background="{StaticResource Fg}"/>
+                                                <Border Height="4" CornerRadius="2" Background="{StaticResource Sub}"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="Slider.IncreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Background="Transparent"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb x:Name="thumb" Opacity="0">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Ellipse Width="12" Height="12" Fill="{StaticResource Fg}"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="thumb" Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Vertical mixer fader: tick marks either side, a flat bar thumb -->
+        <Style x:Key="Fader" TargetType="Slider">
+            <Setter Property="Orientation" Value="Vertical"/>
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="100"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsMoveToPointEnabled" Value="True"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid Width="40" Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TickBar Grid.Column="0" Fill="{StaticResource Faint}" Placement="Left" Width="8" HorizontalAlignment="Right"
+                                     Margin="0,4" Minimum="0" Maximum="100" TickFrequency="10"/>
+                            <Border Grid.Column="1" Width="3" Margin="4,4" CornerRadius="1.5" Background="{StaticResource Line}"/>
+                            <TickBar Grid.Column="2" Fill="{StaticResource Faint}" Placement="Right" Width="8" HorizontalAlignment="Left"
+                                     Margin="0,4" Minimum="0" Maximum="100" TickFrequency="10"/>
+                            <Track x:Name="PART_Track" Grid.ColumnSpan="3" IsDirectionReversed="False">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Width="3" CornerRadius="1.5" Background="{StaticResource Sub}"/>
                                             </ControlTemplate>
                                         </RepeatButton.Template>
                                     </RepeatButton>
@@ -258,7 +334,9 @@
                                     <Thumb>
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
-                                                <Ellipse Width="12" Height="12" Fill="{StaticResource Fg}"/>
+                                                <Border Width="24" Height="8" Background="Transparent">
+                                                    <Border Height="3" CornerRadius="1.5" Background="{StaticResource Fg}" VerticalAlignment="Center"/>
+                                                </Border>
                                             </ControlTemplate>
                                         </Thumb.Template>
                                     </Thumb>
@@ -270,33 +348,69 @@
             </Setter>
         </Style>
 
-        <!-- Plain list with hover rows -->
-        <Style x:Key="Rows" TargetType="ListBox">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="ItemContainerStyle">
+        <!-- Dark context menus -->
+        <Style TargetType="ContextMenu">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
                 <Setter.Value>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Focusable" Value="False"/>
-                        <Setter Property="Cursor" Value="Hand"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border x:Name="b" Background="Transparent" CornerRadius="10" Padding="10,7" Margin="0,0,0,2">
-                                        <ContentPresenter/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="b" Property="Background" Value="{StaticResource Hover}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border Background="#FF1E1E22" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="10" Padding="4">
+                            <StackPanel IsItemsHost="True"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="b" Background="Transparent" CornerRadius="6" Padding="12,6" MinWidth="120">
+                            <DockPanel>
+                                <TextBlock x:Name="check" DockPanel.Dock="Left" Width="18" FontFamily="{StaticResource Icons}" FontSize="11"
+                                           VerticalAlignment="Center" Text="&#xE73E;" Visibility="Hidden"/>
+                                <ContentPresenter ContentSource="Header" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="{StaticResource Hover}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="check" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Clickable card (notes, clipboard) -->
+        <Style x:Key="Card" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource CardBg}"/>
+            <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}" ClipToBounds="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="#FF232327"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>

@@ -18,6 +18,8 @@ public sealed class VolumeChannel
     public required string Key { get; init; }
     public required string Name { get; init; }
     public ImageSource? Icon { get; init; }
+    /// <summary>For devices: the Windows name, e.g. "Speakers" or "Headphones".</summary>
+    public string? DeviceName { get; init; }
     public bool IsDevice { get; init; }
     public bool IsMic { get; init; }
 
@@ -66,7 +68,7 @@ public static class AudioMixer
                 f => Mta(() => v.SetMasterVolumeLevelScalar(f, ref _ctx)),
                 () => Mta(() => { v.GetMute(out bool m); return m; }),
                 m => Mta(() => v.SetMute(m, ref _ctx)))
-            { Key = key, Name = name, IsDevice = true, IsMic = flow == EDataFlow.Capture };
+            { Key = key, Name = name, DeviceName = FriendlyName(dev), IsDevice = true, IsMic = flow == EDataFlow.Capture };
         }
         catch { return null; }
     }
@@ -128,6 +130,43 @@ public static class AudioMixer
         }
         catch { }
         return result;
+    }
+
+    /// <summary>"Speakers (Realtek Audio)" → "Speakers".</summary>
+    static string? FriendlyName(IMMDevice dev)
+    {
+        try
+        {
+            dev.OpenPropertyStore(0 /* STGM_READ */, out var store);
+            var key = new PropertyKey { Fmtid = new Guid("A45C254E-DF1C-4EFD-8020-67D146A850E0"), Pid = 14 };
+            store.GetValue(ref key, out var pv);
+            try
+            {
+                if (pv.Vt != 31 /* VT_LPWSTR */) return null;
+                string? full = Marshal.PtrToStringUni(pv.Ptr);
+                if (full is null) return null;
+                int paren = full.IndexOf(" (", StringComparison.Ordinal);
+                return paren > 0 ? full[..paren] : full;
+            }
+            finally { PropVariantClear(ref pv); }
+        }
+        catch { return null; }
+    }
+
+    [DllImport("ole32.dll")] static extern int PropVariantClear(ref PropVariant pv);
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct PropertyKey { public Guid Fmtid; public int Pid; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct PropVariant { public ushort Vt; public ushort R1, R2, R3; public IntPtr Ptr; public IntPtr Ptr2; }
+
+    [ComImport, Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    interface IPropertyStore
+    {
+        void GetCount(out int count);
+        void GetAt(int index, out PropertyKey key);
+        void GetValue(ref PropertyKey key, out PropVariant value);
     }
 
     abstract class SessionVolume
@@ -241,6 +280,7 @@ public static class AudioMixer
     interface IMMDevice
     {
         void Activate(ref Guid iid, int clsCtx, IntPtr activationParams, [MarshalAs(UnmanagedType.IUnknown)] out object o);
+        void OpenPropertyStore(int access, out IPropertyStore store);
     }
 
     [ComImport, Guid("5CDF2C82-841E-4546-9722-0CF74078229A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

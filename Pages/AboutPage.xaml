@@ -1,0 +1,80 @@
+<UserControl x:Class="EasyNotch.Pages.AboutPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Width="72" Height="72" CornerRadius="18" Background="{StaticResource CardBg}" VerticalAlignment="Top">
+            <Image Source="/Assets/easynotch.ico" Width="52" Height="52" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </Border>
+
+        <StackPanel Grid.Column="1" Margin="20,0,0,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Easy Notch" FontSize="20" FontWeight="Bold"/>
+                <TextBlock x:Name="VersionText" FontSize="13" Foreground="{StaticResource Sub}" VerticalAlignment="Bottom" Margin="10,0,0,3"/>
+            </StackPanel>
+            <TextBlock Text="Clock, weather, music, focus, notes, clipboard and volume, tucked into the top of your screen."
+                       FontSize="12" Foreground="{StaticResource Sub}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+
+            <WrapPanel Margin="0,14,0,0">
+                <Button Style="{StaticResource PillBtn}" Margin="0,0,8,0" Click="GitHub_Click" ToolTip="{x:Static local:AboutPage.RepoUrl}"
+                        xmlns:local="clr-namespace:EasyNotch.Pages">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8A7;" Style="{StaticResource Icon}" FontSize="12" Margin="0,1,8,0"/>
+                        <TextBlock Text="GitHub"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="CheckBtn" Style="{StaticResource PillBtn}" Margin="0,0,8,0" Click="Check_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE72C;" Style="{StaticResource Icon}" FontSize="12" Margin="0,1,8,0"/>
+                        <TextBlock Text="Check for updates"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource PillBtn}" Click="Settings_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE713;" Style="{StaticResource Icon}" FontSize="12" Margin="0,1,8,0"/>
+                        <TextBlock Text="Settings"/>
+                    </StackPanel>
+                </Button>
+                <!-- Buy me a coffee: icon only (a cup on a yellow circle) -->
+                <Button x:Name="CoffeeBtn" Margin="8,0,0,0" Width="30" Height="30" Cursor="Hand" Focusable="False"
+                        ToolTip="Buy me a coffee" Click="Coffee_Click" VerticalAlignment="Center">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Ellipse x:Name="bg" Fill="#FFFFDD00"/>
+                                <Viewbox Margin="7">
+                                    <Canvas Width="24" Height="24">
+                                        <!-- steam -->
+                                        <Path Data="M10,2 C9,3.5 11,4.5 10,6 M14,2 C13,3.5 15,4.5 14,6" Stroke="#FF0D0C22" StrokeThickness="1.6"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                        <!-- cup -->
+                                        <Path Data="M4,9 H18 V14 A6,6 0 0 1 12,20 H10 A6,6 0 0 1 4,14 Z" Fill="#FF0D0C22"/>
+                                        <!-- handle -->
+                                        <Path Data="M18,10.5 H19.5 A2.25,2.25 0 0 1 19.5,15 H17.5" Stroke="#FF0D0C22" StrokeThickness="1.6"/>
+                                        <!-- saucer -->
+                                        <Path Data="M3,22 H19" Stroke="#FF0D0C22" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                    </Canvas>
+                                </Viewbox>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bg" Property="Opacity" Value="0.85"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </WrapPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="2,10,0,0">
+                <TextBlock x:Name="UpdateStatus" FontSize="12" Foreground="{StaticResource Sub}" VerticalAlignment="Center"/>
+                <Button x:Name="GetUpdate" Style="{StaticResource TextBtn}" FontSize="12" Foreground="{StaticResource Accent}"
+                        Padding="8,2" Margin="6,0,0,0" Visibility="Collapsed" Click="GetUpdate_Click"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

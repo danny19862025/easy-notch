@@ -38,6 +38,7 @@ public partial class App : Application
         var menu = new Forms.ContextMenuStrip();
         menu.Items.Add("Open Easy Notch", null, (_, _) => _island?.OpenFromTray());
         menu.Items.Add("Settings", null, (_, _) => _island?.OpenFromTray("settings"));
+        menu.Items.Add("About", null, (_, _) => _island?.OpenFromTray("about"));
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Quit", null, (_, _) => Shutdown());
 
