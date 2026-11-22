@@ -5,12 +5,88 @@ A notch at the top of your screen, for Windows and Linux. Closed, it shows the t
 or click the dots on the right, to move between pages. Click outside, the handle at
 the top, or press Esc to close it.
 
+## Install
+
+Downloads are on the [releases page](https://github.com/danny19862025/easy-notch/releases/latest).
+
+### Windows
+
+Needs Windows 10 (version 1809) or later, 64-bit.
+
+1. Download **EasyNotch.exe**. It's a single file and doesn't need .NET installed.
+2. Move it somewhere permanent, for example `Documents\Easy Notch`. Windows starts it from that spot
+   each time you sign in, so don't leave it in Downloads if you clean that folder.
+3. Double-click it. The notch appears at the top of your main screen, and an icon appears in the tray
+   (click the **^** arrow on the taskbar if it's hidden).
+4. Windows SmartScreen may warn because the file isn't code-signed: choose **More info → Run anyway**.
+
+Easy Notch starts with Windows from then on. Switch that off in Settings → **Start with Windows**.
+
+- **Update:** right-click the tray icon → **Quit**, replace `EasyNotch.exe` with the new one, and run it.
+  Your notes and settings are kept.
+- **Uninstall:** turn off **Start with Windows** in Settings, quit from the tray icon, and delete
+  `EasyNotch.exe`. To also delete your notes, clipboard history and settings, delete
+  `%LOCALAPPDATA%\EasyNotch` (paste that into File Explorer's address bar).
+
+### Linux
+
+Needs a 64-bit desktop running X11, or Wayland with XWayland (installed by default on KDE Plasma and GNOME).
+No root is needed for Easy Notch itself; only the optional packages below use `sudo`.
+
+1. Install the packages for your distribution (see below).
+2. Download **EasyNotch-linux-x64.tar.gz** and install it from a terminal:
+
+   ```sh
+   cd ~/Downloads
+   tar -xzf EasyNotch-linux-x64.tar.gz
+   ./EasyNotch-linux-x64/install.sh
+   ```
+
+   This installs to `~/.local/opt/easy-notch`, adds **Easy Notch** to your app menu, makes it start when
+   you log in, and starts it. Use `./install.sh --no-autostart` to skip starting at login, or
+   `--no-start` to install without starting it now.
+3. Run `easy-notch` from a terminal or open it from the app menu any time. If `easy-notch` isn't found,
+   add `~/.local/bin` to your `PATH` (most distributions already do).
+
+- **Update:** download the new archive and run its `install.sh` again. It closes the running copy,
+  replaces it, and keeps your notes and settings.
+- **Uninstall:** `~/.local/opt/easy-notch/uninstall.sh`. Add `--purge` to also delete your notes,
+  clipboard history and settings (`~/.local/share/easy-notch`).
+
+#### Packages by distribution
+
+Easy Notch runs without these, but the **Volume Mixer** and **Focus noise** need `pactl` and `pacat`
+(PulseAudio's tools, which also control PipeWire). Most desktops include them already; to check, run
+`pactl info`. On GNOME, the tray icon needs the AppIndicator extension.
+
+| Distribution | Command |
+|---|---|
+| **Ubuntu, Linux Mint, Pop!_OS, Zorin, elementary, Debian** | `sudo apt install pulseaudio-utils` |
+| **Fedora** (Workstation, KDE) | `sudo dnf install pulseaudio-utils` |
+| **Arch, Manjaro, EndeavourOS, CachyOS** | `sudo pacman -S --needed libpulse` |
+| **openSUSE** (Tumbleweed, Leap) | `sudo zypper install pulseaudio-utils` |
+
+Notes for each desktop:
+
+- **KDE Plasma** (any distribution): everything works out of the box: tray icon, on every virtual desktop,
+  above other windows. This is where the Linux version was tested (Plasma 6, Wayland).
+- **GNOME** (Ubuntu, Fedora Workstation, Debian): the tray icon needs the AppIndicator extension. Ubuntu
+  ships it enabled. On Fedora run `sudo dnf install gnome-shell-extension-appindicator`, on Debian
+  `sudo apt install gnome-shell-extension-appindicator`, on Arch
+  `sudo pacman -S gnome-shell-extension-appindicator`, then log out and back in and turn it on in the
+  **Extensions** app. Without it, open Easy Notch from the app menu or with `easy-notch --open settings`.
+- **Cinnamon** (Linux Mint) and **XFCE** (4.16 or later): the tray icon shows in the panel's system tray.
+- **Tiling compositors** (Sway, Hyprland, i3): add a rule to float the window whose class is `easy-notch`,
+  or it gets tiled like a normal window.
+- **Immutable systems** (Fedora Silverblue/Kinoite, Bazzite): `install.sh` only writes to your
+  home folder, so it works as is. Install `pulseaudio-utils` with `rpm-ostree install` if `pactl` is missing.
+
 ## Pages
 
 | | |
 |---|---|
 | **Clock** | Big time and date, plus a list of places (London, New York and Tokyo to start). Click a place to show its time big. |
-| **Weather** | Current temperature, conditions, feels-like, today's high/low and wind, plus the next seven hours and the next six days together, each with rain chance. Click the place name to change it; it starts at your time-zone city. The closed notch shows the temperature next to the time. |
+| **Weather** | Current temperature, conditions, feels-like, today's high/low and wind, plus the next seven hours and the next six days together, each with rain chance. Click the place name to change it; it starts at your time-zone city. Click the C/F next to the temperature (or use Settings) to switch between °C and °F. The closed notch shows the temperature next to the time. |
 | **Now Playing** | Artwork, title, seek bar with time remaining, shuffle, previous / play / next, repeat. Works with any app that reports to Windows (Spotify, browsers, Media Player…). |
 | **Focus** | Pick minutes, then start. *Pomodoro* cycles focus and breaks; *Zen* is one session. Optional white, pink or brown noise, generated on the fly. |
 | **Notes** | Note cards with search and pinning. Lines starting with `[ ]` become checkboxes you can tick right on the card. |
@@ -48,7 +124,7 @@ expose the usual per-app control (`ISimpleAudioVolume`); there Easy Notch uses t
 control (`IChannelAudioVolume`), which has no mute switch, so muting saves the level and restores
 it on unmute. On those builds a mute from Easy Notch shows in Windows' own mixer as volume 0.
 
-## Build and run
+## Build and run (Windows)
 
 Needs the .NET 10 SDK.
 
@@ -64,19 +140,12 @@ dotnet publish -c Release -o out
 
 `EasyNotch.exe --open <clock|media|focus|notes|clipboard|mixer|settings>` starts with that page open.
 
-## Linux
+## Linux details
 
 The Linux version has the same pages, settings and look, built with [Avalonia](https://avaloniaui.net).
 It runs through X11 or XWayland, so it works on Wayland desktops too. It was tested on KDE Plasma 6 (Wayland).
 
-### Install
-
-1. Download **EasyNotch-linux-x64.tar.gz** from the [latest release](https://github.com/danny19862025/easy-notch/releases/latest).
-2. Extract it and run `./install.sh` in the extracted folder. No root is needed: it installs to
-   `~/.local/opt/easy-notch`, adds Easy Notch to your app menu, and starts it.
-
-It starts when you log in (`./install.sh --no-autostart` skips that; it can also be switched in Settings).
-`~/.local/opt/easy-notch/uninstall.sh` removes it; add `--purge` to also delete your notes, clipboard and settings.
+See [Install → Linux](#linux) for setup on each distribution.
 
 ### What it uses
 
