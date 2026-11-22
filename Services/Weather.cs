@@ -54,7 +54,9 @@ public sealed class WeatherService
         _timer.Tick += async (_, _) => await RefreshAsync();
     }
 
-    static bool Metric => RegionInfo.CurrentRegion.IsMetric;
+    /// <summary>"C" or "F", from Settings (the first default follows the system region).</summary>
+    public string Unit => _settings.TempUnit == "F" ? "F" : "C";
+    bool Metric => Unit == "C";
 
     public void Start()
     {
@@ -64,7 +66,7 @@ public sealed class WeatherService
 
     public async Task RefreshIfStaleAsync()
     {
-        if (Data is null || DateTime.Now - Data.Fetched > MaxAge || Data.Place.Label != _settings.WeatherPlace?.Label)
+        if (Data is null || DateTime.Now - Data.Fetched > MaxAge || Data.Place.Label != _settings.WeatherPlace?.Label || Data.TempUnit != Unit)
             await RefreshAsync();
     }
 
@@ -83,7 +85,7 @@ public sealed class WeatherService
                 _settings.WeatherPlace = place;
                 _settings.Save();
             }
-            Data = await FetchAsync(place);
+            Data = await FetchAsync(place, Metric);
             Error = null;
             try
             {
@@ -101,6 +103,14 @@ public sealed class WeatherService
             _busy = false;
             Changed?.Invoke();
         }
+    }
+
+    /// <summary>Switches between °C and °F; the forecast is fetched again in the new unit.</summary>
+    public async Task SetUnitAsync(string unit)
+    {
+        _settings.TempUnit = unit == "F" ? "F" : "C";
+        _settings.Save();
+        await RefreshAsync();
     }
 
     public async Task SetPlaceAsync(WeatherPlace place)
@@ -132,10 +142,10 @@ public sealed class WeatherService
         return list;
     }
 
-    static async Task<WeatherData> FetchAsync(WeatherPlace p)
+    static async Task<WeatherData> FetchAsync(WeatherPlace p, bool metric)
     {
-        string unit = Metric ? "celsius" : "fahrenheit";
-        string wind = Metric ? "kmh" : "mph";
+        string unit = metric ? "celsius" : "fahrenheit";
+        string wind = metric ? "kmh" : "mph";
         string url = "https://api.open-meteo.com/v1/forecast" +
             $"?latitude={p.Lat.ToString(CultureInfo.InvariantCulture)}&longitude={p.Lon.ToString(CultureInfo.InvariantCulture)}" +
             "&current=temperature_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,relative_humidity_2m" +
@@ -172,7 +182,7 @@ public sealed class WeatherService
         return new WeatherData
         {
             Place = p, Now = now, Hours = hours, Days = days, Fetched = DateTime.Now,
-            TempUnit = Metric ? "C" : "F", WindUnit = Metric ? "km/h" : "mph",
+            TempUnit = metric ? "C" : "F", WindUnit = metric ? "km/h" : "mph",
         };
     }
 

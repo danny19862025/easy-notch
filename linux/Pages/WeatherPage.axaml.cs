@@ -47,6 +47,7 @@ public partial class WeatherPage : UserControl, IPage
         NowIcon.IsNight = !d.Now.IsDay;
         NowTemp.Text = $"{Math.Round(d.Now.Temp)}°";
         Unit.Text = d.TempUnit;
+        ToolTip.SetTip(Unit, d.TempUnit == "F" ? "Show °C" : "Show °F");
         Condition.Text = WeatherService.Describe(d.Now.Code);
         var today = d.Days.FirstOrDefault();
         Detail.Text = $"Feels {Math.Round(d.Now.Feels)}°" +
@@ -81,6 +82,13 @@ public partial class WeatherPage : UserControl, IPage
         if (rain >= 20) temps.Children.Add(new TextBlock { Text = $" {rain}%", FontSize = 10, Foreground = Res.Brush("Accent"), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 1, 0, 0) });
         sp.Children.Add(temps);
         return sp;
+    }
+
+    async void Unit_Click(object? sender, PointerReleasedEventArgs e)
+    {
+        if (e.InitialPressMouseButton != MouseButton.Left) return;
+        Updated.Text = "Updating…";
+        await _ctx.Weather.SetUnitAsync(_ctx.Weather.Unit == "F" ? "C" : "F");
     }
 
     async void Refresh_Click(object? sender, RoutedEventArgs e)

@@ -42,7 +42,20 @@ public partial class SettingsPage : UserControl, IPage
         Startup.IsChecked = LinuxDesktop.StartsAtLogin;
         Tuck.IsChecked = _ctx.Settings.TuckOverFullScreen;
         AutoUpdate.IsChecked = _ctx.Settings.CheckForUpdates;
+        ShowUnit();
     }
+
+    void ShowUnit()
+    {
+        bool f = _ctx.Weather.Unit == "F";
+        UnitC.Background = Res.Brush(f ? "FieldBg" : "Accent");
+        UnitC.Foreground = f ? Res.Brush("Fg") : new ImmutableSolidColorBrush(Color.FromRgb(0x0B, 0x0B, 0x0C));
+        UnitF.Background = Res.Brush(f ? "Accent" : "FieldBg");
+        UnitF.Foreground = f ? new ImmutableSolidColorBrush(Color.FromRgb(0x0B, 0x0B, 0x0C)) : Res.Brush("Fg");
+    }
+
+    async void UnitC_Click(object? sender, RoutedEventArgs e) { var t = _ctx.Weather.SetUnitAsync("C"); ShowUnit(); await t; }
+    async void UnitF_Click(object? sender, RoutedEventArgs e) { var t = _ctx.Weather.SetUnitAsync("F"); ShowUnit(); await t; }
 
     public void OnTick() { }
 
