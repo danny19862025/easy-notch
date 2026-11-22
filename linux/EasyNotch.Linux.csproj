@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Easy Notch for Linux: Avalonia (X11 / XWayland). The Windows app lives in the folder above. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>easy-notch</AssemblyName>
+    <RootNamespace>EasyNotch</RootNamespace>
+    <Product>Easy Notch</Product>
+    <Version>0.2.0</Version>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+    <!-- Pages take a PageContext, so the runtime XAML loader (which needs a parameterless constructor) is never used. -->
+    <NoWarn>$(NoWarn);AVLN3001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.23" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.23" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.23" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.23" />
+    <!-- Already used by Avalonia on Linux; Easy Notch also uses it for MPRIS (Now Playing). -->
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Shared with the Windows app, unchanged. -->
+    <Compile Include="../Services/Notes.cs" Link="Shared/Notes.cs" />
+    <Compile Include="../Services/Updates.cs" Link="Shared/Updates.cs" />
+    <Compile Include="../Services/Weather.cs" Link="Shared/Weather.cs" />
+    <AvaloniaResource Include="Assets/**" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="using:EasyNotch.Controls"
+        x:Class="EasyNotch.IslandWindow"
+        Title="Easy Notch" Width="700" Height="300"
+        SystemDecorations="None" Background="Transparent" TransparencyLevelHint="Transparent"
+        CanResize="False" Topmost="True" ShowInTaskbar="False" ShowActivated="False"
+        WindowStartupLocation="Manual">
+  <!-- The window is a fixed transparent canvas; only the notch is visible and clickable. -->
+  <Grid>
+    <c:NotchBorder x:Name="Notch" HorizontalAlignment="Center" VerticalAlignment="Top"
+                   BodyWidth="170" BodyHeight="32" BottomRadius="16"
+                   Fill="{StaticResource IslandBg}" Stroke="{StaticResource IslandEdge}">
+      <c:NotchBorder.Effect>
+        <DropShadowEffect BlurRadius="24" OffsetX="0" OffsetY="4" Opacity="0.4" Color="Black"/>
+      </c:NotchBorder.Effect>
+      <Grid>
+        <!-- ============ COMPACT ============ -->
+        <Grid x:Name="Compact" Margin="10,0,14,0" ColumnDefinitions="Auto,*,Auto" Background="Transparent">
+          <Grid Width="20" Height="20" VerticalAlignment="Center">
+            <TextBlock x:Name="CompactGlyph" Classes="icon" FontSize="16" Foreground="{StaticResource Sub}"/>
+            <Border x:Name="CompactArtBox" CornerRadius="5" IsVisible="False"/>
+          </Grid>
+          <TextBlock x:Name="CompactText" Grid.Column="1" Margin="8,0" FontSize="13" FontWeight="SemiBold"
+                     VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+          <StackPanel x:Name="Eq" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Height="13" Spacing="2" IsVisible="False">
+            <Rectangle x:Name="Eq1" Width="3" Height="13" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource Accent}" RenderTransformOrigin="50%,100%"/>
+            <Rectangle x:Name="Eq2" Width="3" Height="13" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource Accent}" RenderTransformOrigin="50%,100%"/>
+            <Rectangle x:Name="Eq3" Width="3" Height="13" RadiusX="1.5" RadiusY="1.5" Fill="{StaticResource Accent}" RenderTransformOrigin="50%,100%"/>
+          </StackPanel>
+          <TextBlock x:Name="CompactRight" Grid.Column="2" FontSize="12" Foreground="{StaticResource Sub}" VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- ============ EXPANDED ============ -->
+        <Grid x:Name="Expanded" IsVisible="False" Opacity="0">
+          <!-- Grab handle: click to close -->
+          <Border x:Name="Handle" Width="120" Height="7" CornerRadius="3.5" BorderThickness="1" BorderBrush="{StaticResource Faint}"
+                  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,6,0,0" Background="Transparent" Cursor="Hand"
+                  ToolTip.Tip="Close (Esc)"/>
+          <ContentControl x:Name="PageHost" Margin="30,26,48,18" Focusable="False"/>
+          <StackPanel x:Name="Dots" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,18,0"/>
+        </Grid>
+      </Grid>
+    </c:NotchBorder>
+  </Grid>
+</Window>

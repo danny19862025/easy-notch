@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="EasyNotch.Pages.NotesPage">
+  <Grid>
+    <!-- List of note cards -->
+    <Grid x:Name="ListPanel" RowDefinitions="Auto,*">
+      <DockPanel>
+        <Button DockPanel.Dock="Right" Classes="icon" Width="38" Height="38" CornerRadius="19" Margin="8,0,0,0"
+                Content="&#xE145;" FontSize="20" ToolTip.Tip="New note" Click="New_Click"/>
+        <TextBox x:Name="Search" Classes="field" Watermark="Search" TextChanged="Search_Changed"/>
+      </DockPanel>
+      <TextBlock x:Name="Empty" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"
+                 Foreground="{StaticResource Sub}" TextAlignment="Center"
+                 Text="No notes yet. Press + to start one.&#10;Lines starting with [ ] become a checklist."/>
+      <ScrollViewer x:Name="Scroller" Grid.Row="1" Margin="0,10,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+        <StackPanel x:Name="Cards" Orientation="Horizontal" Margin="0,0,0,8"/>
+      </ScrollViewer>
+    </Grid>
+
+    <!-- Editor -->
+    <Grid x:Name="Editor" IsVisible="False" RowDefinitions="Auto,*">
+      <DockPanel>
+        <Button DockPanel.Dock="Left" Classes="icon" Content="&#xE5C4;" ToolTip.Tip="Back to all notes" Click="Back_Click"/>
+        <Button DockPanel.Dock="Right" Classes="icon" Content="&#xE872;" ToolTip.Tip="Delete note" Click="Delete_Click"/>
+        <Button x:Name="PinBtn" DockPanel.Dock="Right" Classes="icon" Content="&#xF10D;" Click="Pin_Click"/>
+        <Button DockPanel.Dock="Right" Classes="icon" Content="&#xE6B1;" ToolTip.Tip="Add a checklist item" Click="Check_Click"/>
+        <TextBox x:Name="TitleBox" Classes="bare" FontSize="17" FontWeight="Bold" Watermark="Title"
+                 VerticalAlignment="Center" Margin="8,0" TextChanged="Editor_Changed"/>
+      </DockPanel>
+      <TextBox x:Name="BodyBox" Grid.Row="1" Classes="bare" FontSize="14" Margin="10,8,0,0"
+               AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
+               ScrollViewer.VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top"
+               Watermark="Write something… ([ ] makes a checkbox)" TextChanged="Editor_Changed"/>
+    </Grid>
+  </Grid>
+</UserControl>

@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="EasyNotch.Pages.SettingsPage">
+  <Grid ColumnDefinitions="*,24,*">
+    <!-- Left: pages -->
+    <DockPanel>
+      <TextBlock DockPanel.Dock="Top" Text="Pages" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Sub}" Margin="0,0,0,6"/>
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="Widgets" Margin="0,0,10,0"/>
+      </ScrollViewer>
+    </DockPanel>
+
+    <!-- Right: places + general -->
+    <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+      <StackPanel Margin="0,0,10,0">
+        <TextBlock Text="Clock places" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Sub}" Margin="0,0,0,6"/>
+        <StackPanel x:Name="Places"/>
+        <TextBox x:Name="PlaceSearch" Classes="field" FontSize="13" Padding="10,6" Watermark="Add a city or time zone"
+                 Margin="0,4,0,0" TextChanged="PlaceSearch_Changed"/>
+        <StackPanel x:Name="PlaceHits" Margin="0,2,0,0"/>
+
+        <TextBlock Text="General" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Sub}" Margin="0,14,0,8"/>
+        <DockPanel Margin="0,0,0,12">
+          <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
+            <Button x:Name="UnitC" Classes="pill" Content="°C" Padding="12,4" Click="UnitC_Click"/>
+            <Button x:Name="UnitF" Classes="pill" Content="°F" Padding="12,4" Click="UnitF_Click"/>
+          </StackPanel>
+          <TextBlock Text="Temperature" FontSize="13" VerticalAlignment="Center"/>
+        </DockPanel>
+        <CheckBox x:Name="Startup" Content="Start when I log in" Margin="0,0,0,10" Click="Startup_Click"/>
+        <CheckBox x:Name="Tuck" Content="Tuck away over full-screen apps" Margin="0,0,0,10" Click="Tuck_Click"/>
+        <CheckBox x:Name="AutoUpdate" Content="Check for updates automatically" Margin="0,0,0,12" Click="AutoUpdate_Click"/>
+        <StackPanel Orientation="Horizontal">
+          <Button Classes="pill" Content="Data folder" Click="Data_Click"/>
+          <Button Classes="pill" Content="Quit Easy Notch" Margin="8,0,0,0" Click="Quit_Click"/>
+        </StackPanel>
+        <TextBlock x:Name="DataNote" FontSize="11" Foreground="{StaticResource Faint}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

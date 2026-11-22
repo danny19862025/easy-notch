@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="EasyNotch.Pages.ClockPage">
+  <Grid ColumnDefinitions="*,Auto">
+    <StackPanel VerticalAlignment="Center">
+      <TextBlock x:Name="DateText" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource Sub}"/>
+      <StackPanel Orientation="Horizontal" Margin="-4,-8,0,-10">
+        <TextBlock x:Name="TimeText" FontFamily="{StaticResource Display}" FontSize="88" FontWeight="Light"/>
+        <TextBlock x:Name="AmPm" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource Sub}"
+                   VerticalAlignment="Top" Margin="10,26,0,0"/>
+      </StackPanel>
+      <TextBlock x:Name="ZoneText" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource Sub}"/>
+    </StackPanel>
+
+    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="24,0,0,0">
+      <StackPanel x:Name="Cities"/>
+      <Button Classes="icon" HorizontalAlignment="Left" Margin="10,6,0,0" Content="&#xE8B8;"
+              ToolTip.Tip="Add or remove places" Click="Settings_Click"/>
+    </StackPanel>
+  </Grid>
+</UserControl>

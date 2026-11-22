@@ -1,0 +1,211 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="EasyNotch.App" Name="Easy Notch" RequestedThemeVariant="Dark">
+  <Application.Resources>
+    <!-- The notch is always dark, like a hardware notch. Same palette as the Windows app. -->
+    <SolidColorBrush x:Key="IslandBg" Color="#FF0A0A0B"/>
+    <SolidColorBrush x:Key="IslandEdge" Color="#FF26262B"/>
+    <SolidColorBrush x:Key="Fg" Color="#FFF5F5F7"/>
+    <SolidColorBrush x:Key="Sub" Color="#FF9A9AA3"/>
+    <SolidColorBrush x:Key="Faint" Color="#FF55555C"/>
+    <SolidColorBrush x:Key="Hover" Color="#1AFFFFFF"/>
+    <SolidColorBrush x:Key="Press" Color="#2EFFFFFF"/>
+    <SolidColorBrush x:Key="FieldBg" Color="#FF1C1C1F"/>
+    <SolidColorBrush x:Key="CardBg" Color="#FF1A1A1D"/>
+    <SolidColorBrush x:Key="CardHover" Color="#FF232327"/>
+    <SolidColorBrush x:Key="Line" Color="#FF2C2C31"/>
+    <SolidColorBrush x:Key="Accent" Color="#FF7DD3FC"/>
+    <SolidColorBrush x:Key="Focus" Color="#FFFDBA74"/>
+    <SolidColorBrush x:Key="Rest" Color="#FF86EFAC"/>
+
+    <!-- Inter (bundled) stands in for Segoe UI; Material Icons Round (bundled) for Segoe Fluent Icons. -->
+    <FontFamily x:Key="Ui">fonts:Inter#Inter</FontFamily>
+    <FontFamily x:Key="Display">fonts:Inter#Inter</FontFamily>
+    <FontFamily x:Key="Icons">avares://easy-notch/Assets/Fonts#Material Icons Round</FontFamily>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme>
+      <FluentTheme.Palettes>
+        <ColorPaletteResources x:Key="Dark" Accent="#FF7DD3FC" RegionColor="#FF0A0A0B" AltHigh="#FF0A0A0B" BaseHigh="#FFF5F5F7"
+                               ChromeMediumLow="#FF1E1E22" ChromeLow="#FF1E1E22" ChromeMedium="#FF232327" ListLow="#1AFFFFFF" ListMedium="#2EFFFFFF"/>
+      </FluentTheme.Palettes>
+    </FluentTheme>
+
+    <Style Selector="Window">
+      <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+      <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+    </Style>
+
+    <Style Selector="TextBlock.icon">
+      <Setter Property="FontFamily" Value="{StaticResource Icons}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Round icon button -->
+    <Style Selector="Button.icon">
+      <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+      <Setter Property="FontFamily" Value="{StaticResource Icons}"/>
+      <Setter Property="FontSize" Value="17"/>
+      <Setter Property="Width" Value="32"/>
+      <Setter Property="Height" Value="32"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="CornerRadius" Value="16"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="b" Background="Transparent" CornerRadius="{TemplateBinding CornerRadius}">
+            <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.icon:pointerover /template/ Border#b"><Setter Property="Background" Value="{StaticResource Hover}"/></Style>
+    <Style Selector="Button.icon:pressed /template/ Border#b"><Setter Property="Background" Value="{StaticResource Press}"/></Style>
+    <Style Selector="Button.icon:disabled"><Setter Property="Opacity" Value="0.3"/></Style>
+
+    <!-- Text-only button (mode switches, menus, lists) -->
+    <Style Selector="Button.text">
+      <Setter Property="Foreground" Value="{StaticResource Sub}"/>
+      <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="Padding" Value="8,4"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="b" Background="Transparent" CornerRadius="8" Padding="{TemplateBinding Padding}">
+            <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.text:pointerover /template/ Border#b"><Setter Property="Background" Value="{StaticResource Hover}"/></Style>
+
+    <!-- Pill text button -->
+    <Style Selector="Button.pill">
+      <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+      <Setter Property="Background" Value="{StaticResource FieldBg}"/>
+      <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Padding" Value="14,6"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="b" Background="{TemplateBinding Background}" CornerRadius="14" Padding="{TemplateBinding Padding}">
+            <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.pill:pointerover /template/ Border#b"><Setter Property="Opacity" Value="0.85"/></Style>
+    <Style Selector="Button.pill:disabled"><Setter Property="Opacity" Value="0.5"/></Style>
+
+    <!-- Clickable card (notes, clipboard) -->
+    <Style Selector="Button.card">
+      <Setter Property="Background" Value="{StaticResource CardBg}"/>
+      <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+      <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+      <Setter Property="Padding" Value="12,10"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Name="b" Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}" ClipToBounds="True">
+            <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="Button.card:pointerover /template/ Border#b"><Setter Property="Background" Value="{StaticResource CardHover}"/></Style>
+
+    <!-- On/off switch -->
+    <Style Selector="CheckBox">
+      <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Focusable" Value="False"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <StackPanel Orientation="Horizontal" Background="Transparent">
+            <Border Name="box" Width="34" Height="18" CornerRadius="9" Background="{StaticResource Line}" VerticalAlignment="Center">
+              <Ellipse Name="knob" Width="12" Height="12" Fill="{StaticResource Sub}" HorizontalAlignment="Left" Margin="3,0"/>
+            </Border>
+            <ContentPresenter Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+          </StackPanel>
+        </ControlTemplate>
+      </Setter>
+    </Style>
+    <Style Selector="CheckBox:checked /template/ Border#box"><Setter Property="Background" Value="{StaticResource Accent}"/></Style>
+    <Style Selector="CheckBox:checked /template/ Ellipse#knob">
+      <Setter Property="Fill" Value="#FF0B0B0C"/>
+      <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+
+    <!-- Rounded field -->
+    <Style Selector="TextBox.field">
+      <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+      <Setter Property="CaretBrush" Value="{StaticResource Fg}"/>
+      <Setter Property="SelectionBrush" Value="#807DD3FC"/>
+      <Setter Property="Background" Value="{StaticResource FieldBg}"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="CornerRadius" Value="10"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="Padding" Value="12,8"/>
+      <Setter Property="MinHeight" Value="0"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBox.field:pointerover /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="{StaticResource FieldBg}"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="TextBox.field:focus /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="{StaticResource FieldBg}"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="TextBox.field:focus"><Setter Property="Foreground" Value="{StaticResource Fg}"/></Style>
+    <Style Selector="TextBox.field /template/ TextBlock#PART_Watermark"><Setter Property="Foreground" Value="{StaticResource Sub}"/></Style>
+    <Style Selector="TextBox.field:focus /template/ TextBlock#PART_Watermark"><Setter Property="Foreground" Value="{StaticResource Sub}"/></Style>
+
+    <!-- Borderless text box (note editor) -->
+    <Style Selector="TextBox.bare">
+      <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+      <Setter Property="CaretBrush" Value="{StaticResource Fg}"/>
+      <Setter Property="SelectionBrush" Value="#807DD3FC"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="2,0"/>
+      <Setter Property="MinHeight" Value="0"/>
+    </Style>
+    <Style Selector="TextBox.bare:pointerover /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="TextBox.bare:focus /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="TextBox.bare:focus"><Setter Property="Foreground" Value="{StaticResource Fg}"/></Style>
+    <Style Selector="TextBox.bare /template/ TextBlock#PART_Watermark"><Setter Property="Foreground" Value="{StaticResource Faint}"/></Style>
+    <Style Selector="TextBox.bare:focus /template/ TextBlock#PART_Watermark"><Setter Property="Foreground" Value="{StaticResource Faint}"/></Style>
+
+    <Style Selector="ToolTip">
+      <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="ContextMenu, MenuItem">
+      <Setter Property="FontFamily" Value="{StaticResource Ui}"/>
+      <Setter Property="FontSize" Value="13"/>
+    </Style>
+  </Application.Styles>
+</Application>

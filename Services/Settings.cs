@@ -44,6 +44,8 @@ public sealed class Settings
     /// <summary>Set once "Start with Windows" has been switched on by default, so turning it off sticks.</summary>
     public bool StartupDefaulted { get; set; }
     /// <summary>Check GitHub for a newer release (at most once a day).</summary>
+    /// <summary>Weather temperature unit: "C" or "F". Starts from the system region.</summary>
+    public string TempUnit { get; set; } = System.Globalization.RegionInfo.CurrentRegion.IsMetric ? "C" : "F";
     public bool CheckForUpdates { get; set; } = true;
     public DateTime LastUpdateCheck { get; set; }
 
@@ -104,6 +106,7 @@ public sealed class Settings
             s.Cities.Clear();
             s.Save();
         }
+        if (s.TempUnit is not ("C" or "F")) s.TempUnit = System.Globalization.RegionInfo.CurrentRegion.IsMetric ? "C" : "F";
         s.FocusMinutes = Math.Clamp(s.FocusMinutes, 1, 180);
         s.BreakMinutes = Math.Clamp(s.BreakMinutes, 1, 60);
         return s;

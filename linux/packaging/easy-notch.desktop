@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Easy Notch
+GenericName=Top-of-screen notch
+Comment=Clock, weather, music, focus, notes, clipboard and volume in a notch at the top of your screen
+Exec="@EXEC@"
+Icon=easy-notch
+Terminal=false
+Categories=Utility;
+Keywords=notch;island;clock;weather;music;pomodoro;notes;clipboard;volume;
+StartupWMClass=easy-notch
+SingleMainWindow=true

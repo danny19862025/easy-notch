@@ -39,7 +39,22 @@ public partial class SettingsPage : UserControl, IPage
         Startup.IsChecked = StartWithWindows.IsOn;
         Tuck.IsChecked = _ctx.Settings.TuckOverFullScreen;
         AutoUpdate.IsChecked = _ctx.Settings.CheckForUpdates;
+        ShowUnit();
     }
+
+    static readonly Brush OnAccent = new SolidColorBrush(Color.FromRgb(0x0B, 0x0B, 0x0C));
+
+    void ShowUnit()
+    {
+        bool f = _ctx.Weather.Unit == "F";
+        UnitC.Background = (Brush)FindResource(f ? "FieldBg" : "Accent");
+        UnitC.Foreground = f ? (Brush)FindResource("Fg") : OnAccent;
+        UnitF.Background = (Brush)FindResource(f ? "Accent" : "FieldBg");
+        UnitF.Foreground = f ? OnAccent : (Brush)FindResource("Fg");
+    }
+
+    async void UnitC_Click(object sender, RoutedEventArgs e) { var t = _ctx.Weather.SetUnitAsync("C"); ShowUnit(); await t; }
+    async void UnitF_Click(object sender, RoutedEventArgs e) { var t = _ctx.Weather.SetUnitAsync("F"); ShowUnit(); await t; }
 
     void AutoUpdate_Click(object sender, RoutedEventArgs e)
     {
