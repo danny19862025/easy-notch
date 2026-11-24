@@ -126,6 +126,10 @@ expose the usual per-app control (`ISimpleAudioVolume`); there Easy Notch uses t
 control (`IChannelAudioVolume`), which has no mute switch, so muting saves the level and restores
 it on unmute. On those builds a mute from Easy Notch shows in Windows' own mixer as volume 0.
 
+Levels survive restarts: Windows remembers each app's volume (and the speaker and mic levels)
+by itself, and Easy Notch keeps the levels of apps it muted in `mixer-muted.json`, so they still
+show as muted after Easy Notch or Windows restarts and unmute back to where they were.
+
 ## Build and run (Windows)
 
 Needs the .NET 10 SDK.

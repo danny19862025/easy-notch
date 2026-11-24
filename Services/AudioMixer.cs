@@ -185,8 +185,52 @@ public static class AudioMixer
         public override void SetMute(string key, bool mute) => v.SetMute(mute, ref _ctx);
     }
 
-    /// <summary>Levels saved when muting through the per-channel control, which has no mute switch.</summary>
-    static readonly Dictionary<string, float> MutedLevels = [];
+    /// <summary>
+    /// Levels saved when muting through the per-channel control, which has no mute switch.
+    /// Kept on disk (mixer-muted.json) so a muted app is still shown as muted, and unmutes
+    /// back to its old level, after Easy Notch or Windows restarts. Windows itself already
+    /// remembers each app's volume (here: 0 while muted).
+    /// </summary>
+    static readonly MutedLevelStore MutedLevels = new();
+
+    sealed class MutedLevelStore
+    {
+        static string FilePath => System.IO.Path.Combine(Settings.Dir, "mixer-muted.json");
+        readonly Dictionary<string, float> _levels;
+        readonly object _lock = new();
+
+        public MutedLevelStore()
+        {
+            try { _levels = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, float>>(System.IO.File.ReadAllText(FilePath)) ?? []; }
+            catch { _levels = []; }
+        }
+
+        public bool ContainsKey(string key) { lock (_lock) return _levels.ContainsKey(key); }
+
+        public void Set(string key, float level) { lock (_lock) { _levels[key] = level; Save(); } }
+
+        public bool Remove(string key) => Remove(key, out _);
+
+        public bool Remove(string key, out float level)
+        {
+            lock (_lock)
+            {
+                if (!_levels.Remove(key, out level)) return false;
+                Save();
+                return true;
+            }
+        }
+
+        void Save()
+        {
+            try
+            {
+                System.IO.Directory.CreateDirectory(Settings.Dir);
+                System.IO.File.WriteAllText(FilePath, System.Text.Json.JsonSerializer.Serialize(_levels));
+            }
+            catch { /* worst case the mute is forgotten, as before */ }
+        }
+    }
 
     sealed class ChannelVolume(IChannelAudioVolume v) : SessionVolume
     {
@@ -215,7 +259,7 @@ public static class AudioMixer
         {
             if (mute)
             {
-                if (!MutedLevels.ContainsKey(key)) MutedLevels[key] = Get();
+                if (!MutedLevels.ContainsKey(key)) MutedLevels.Set(key, Get());
                 Set(0);
             }
             else if (MutedLevels.Remove(key, out float level))
