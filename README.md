@@ -1,5 +1,7 @@
 # Easy Notch
 
+**Website & Live Interactive Demo:** [danny19862025.github.io/easy-notch](https://danny19862025.github.io/easy-notch/)
+
 A notch at the top of your screen, for Windows and Linux. Closed, it shows the time, what's playing
 (with a small equalizer) or your focus countdown. Click it to open; scroll over it,
 or click the dots on the right, to move between pages. Click outside, the handle at

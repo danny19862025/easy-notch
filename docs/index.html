@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy Notch — A quiet desktop notch for Windows &amp; Linux</title>
+  <meta
+    name="description"
+    content="A sleek Dynamic Island-style notch at the top of your screen for Windows and Linux. Clock, Weather, Now Playing, Focus Timer with ambient noise, Notes, Clipboard, and per-app Volume Mixer."
+  />
+  <meta property="og:title" content="Easy Notch — A quiet desktop notch for Windows & Linux" />
+  <meta
+    property="og:description"
+    content="Click to reveal Clock, Weather, Now Playing, Focus timer, Notes, Clipboard history, and per-app Volume Mixer. Native for Windows and Linux, 100% local."
+  />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#070709" />
+  <link rel="icon" type="image/png" href="assets/easynotch.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sticky Navigation -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="Easy Notch home">
+        <img class="brand-icon" src="assets/easynotch.png" alt="Easy Notch icon" width="34" height="34" />
+        <span>Easy Notch</span>
+        <span class="version-pill">v0.2.0</span>
+      </a>
+
+      <nav class="nav-links" id="nav-links" aria-label="Primary">
+        <a href="#demo">Live Demo</a>
+        <a href="#pages">8 Pages</a>
+        <a href="#platforms">Windows &amp; Linux</a>
+        <a href="#install">Install</a>
+        <a href="#privacy">Privacy</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a
+          class="btn btn-secondary btn-sm"
+          href="https://github.com/danny19862025/easy-notch"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.06 11.06 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/>
+          </svg>
+          GitHub
+        </a>
+
+        <a class="btn btn-primary btn-sm nav-download-btn" href="#install">Download</a>
+
+        <button
+          class="mobile-menu-btn"
+          id="mobile-menu-btn"
+          type="button"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero + Interactive Notch Reveal -->
+    <section class="hero" id="demo">
+      <div class="hero-glow" id="hero-glow" aria-hidden="true"></div>
+      <div class="container">
+        <div class="hero-content reveal">
+          <div class="hero-eyebrow">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            <span>Windows 10/11 &amp; Linux (X11 / Wayland) &middot; Single Self-Contained Download</span>
+          </div>
+
+          <h1>
+            Your desktop’s quiet <span class="gradient-text">notch command centre.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Closed, it rests softly at the top of your screen with the time, weather,
+            live equalizer, or focus timer. Click to reveal 8 everyday tools—scroll
+            between pages, then tuck it right back away.
+          </p>
+
+          <div class="hero-cta">
+            <a
+              class="btn btn-primary btn-lg"
+              href="https://github.com/danny19862025/easy-notch/releases/latest"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16"></path>
+              </svg>
+              Download v0.2.0
+            </a>
+            <a class="btn btn-secondary btn-lg" href="#install">
+              Install Guide
+            </a>
+            <a
+              class="btn btn-secondary btn-lg"
+              href="https://github.com/danny19862025/easy-notch"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Source
+            </a>
+          </div>
+
+          <div class="hero-meta">
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>
+              No .NET install required
+            </span>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>
+              100% Local Data
+            </span>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5L20 7"/></svg>
+              Auto-Tucks Over Full-Screen
+            </span>
+          </div>
+        </div>
+
+        <!-- Interactive Live Notch Stage -->
+        <div class="stage-wrap reveal reveal-scale" data-delay="2">
+          <div class="desktop-bezel">
+            <div
+              class="notch-shell"
+              id="live-notch"
+              role="region"
+              aria-label="Interactive Easy Notch preview"
+              aria-expanded="false"
+            >
+              <!-- Closed Pill State -->
+              <div class="notch-closed">
+                <div class="notch-closed-left">
+                  <span id="notch-closed-time">16:04</span>
+                  <span class="notch-temp" id="notch-closed-temp">21°</span>
+                </div>
+                <div class="eq-bars" id="notch-eq" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+
+              <!-- Expanded Notch State -->
+              <div class="notch-open">
+                <div class="notch-handle-row">
+                  <span class="notch-page-label" id="notch-page-label">Clock</span>
+                  <button class="notch-handle-btn" id="notch-handle-btn" type="button" aria-label="Collapse notch">
+                    <span></span>
+                  </button>
+                  <span class="notch-close-hint">Esc to close</span>
+                </div>
+
+                <div class="notch-body-row">
+                  <!-- Page 1: Clock -->
+                  <div class="notch-page active" data-page="clock">
+                    <div class="n-clock-grid">
+                      <div>
+                        <div class="n-big-time" id="n-big-time">16:04</div>
+                        <div class="n-date" id="n-date">Tuesday, Nov 24</div>
+                        <div class="n-city-badge" id="n-city-label">Local Time</div>
+                      </div>
+                      <div class="n-cities">
+                        <button class="n-city-btn active" type="button" data-tz="" data-city="Local Time">
+                          <span>Local</span><span class="city-time">--:--</span>
+                        </button>
+                        <button class="n-city-btn" type="button" data-tz="Europe/London" data-city="London">
+                          <span>London</span><span class="city-time">--:--</span>
+                        </button>
+                        <button class="n-city-btn" type="button" data-tz="America/New_York" data-city="New York">
+                          <span>New York</span><span class="city-time">--:--</span>
+                        </button>
+                        <button class="n-city-btn" type="button" data-tz="Asia/Tokyo" data-city="Tokyo">
+                          <span>Tokyo</span><span class="city-time">--:--</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Page 2: Weather -->
+                  <div class="notch-page" data-page="weather">
+                    <div class="n-weather-top">
+                      <div class="n-weather-main">
+                        <span class="n-weather-temp" id="n-weather-temp">21°</span>
+                        <button class="n-unit-btn" id="n-unit-btn" type="button" title="Toggle Celsius / Fahrenheit">°C</button>
+                      </div>
+                      <div class="n-weather-meta">
+                        <strong>Partly Cloudy</strong><br />
+                        Feels 20° &middot; H: 24° L: 14° &middot; 12 km/h
+                      </div>
+                    </div>
+                    <div class="n-weather-strip">
+                      <div class="n-hour-card"><div class="h-t">Now</div><div class="h-v" data-temp-c="21">21°</div><div class="h-r">5%</div></div>
+                      <div class="n-hour-card"><div class="h-t">+1h</div><div class="h-v" data-temp-c="22">22°</div><div class="h-r">10%</div></div>
+                      <div class="n-hour-card"><div class="h-t">+2h</div><div class="h-v" data-temp-c="23">23°</div><div class="h-r">15%</div></div>
+                      <div class="n-hour-card"><div class="h-t">+3h</div><div class="h-v" data-temp-c="22">22°</div><div class="h-r">20%</div></div>
+                      <div class="n-hour-card"><div class="h-t">+4h</div><div class="h-v" data-temp-c="19">19°</div><div class="h-r">10%</div></div>
+                      <div class="n-hour-card"><div class="h-t">+5h</div><div class="h-v" data-temp-c="17">17°</div><div class="h-r">5%</div></div>
+                    </div>
+                  </div>
+
+                  <!-- Page 3: Now Playing -->
+                  <div class="notch-page" data-page="media">
+                    <div class="n-media-wrap">
+                      <div class="n-album-art" aria-hidden="true">
+                        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M9 18V5l12-2v13"></path>
+                          <circle cx="6" cy="18" r="3"></circle>
+                          <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                      </div>
+                      <div class="n-media-info">
+                        <div class="n-track-title">Midnight City Lights</div>
+                        <div class="n-track-artist">Synthwave Focus &middot; Spotify / MPRIS</div>
+                        <div class="n-seek-bar"><div class="n-seek-fill" id="n-seek-fill"></div></div>
+                        <div class="n-seek-times"><span>1:52</span><span>-2:14</span></div>
+                        <div class="n-media-controls">
+                          <button class="n-ctrl-btn" type="button" aria-label="Previous">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="19,20 9,12 19,4"/><rect x="5" y="4" width="2.5" height="16"/></svg>
+                          </button>
+                          <button class="n-ctrl-btn primary" id="n-play-btn" type="button" aria-label="Play or pause">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                          </button>
+                          <button class="n-ctrl-btn" type="button" aria-label="Next">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,4 15,12 5,20"/><rect x="16.5" y="4" width="2.5" height="16"/></svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Page 4: Focus -->
+                  <div class="notch-page" data-page="focus">
+                    <div class="n-focus-grid">
+                      <div>
+                        <div class="n-focus-timer" id="n-focus-timer">25:00</div>
+                        <div class="n-focus-sub">Pomodoro &middot; On-the-fly ambient noise</div>
+                      </div>
+                      <div class="n-focus-actions">
+                        <div class="n-pill-group">
+                          <button class="n-mini-pill active" type="button" data-noise="off">Silent</button>
+                          <button class="n-mini-pill" type="button" data-noise="white">White</button>
+                          <button class="n-mini-pill" type="button" data-noise="pink">Pink</button>
+                          <button class="n-mini-pill" type="button" data-noise="brown">Brown</button>
+                        </div>
+                        <button class="btn btn-accent btn-sm" id="n-focus-toggle" type="button">Start Focus</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Page 5: Notes -->
+                  <div class="notch-page" data-page="notes">
+                    <div class="n-notes-grid">
+                      <div class="n-note-card">
+                        <div class="n-note-title"><span>Today’s Tasks</span><span style="color:var(--accent)">Pinned</span></div>
+                        <label class="n-check-row"><input type="checkbox" checked /><span>Ship Easy Notch v0.2.0</span></label>
+                        <label class="n-check-row"><input type="checkbox" /><span>Review Linux KDE &amp; GNOME docs</span></label>
+                        <label class="n-check-row"><input type="checkbox" /><span>Try brown noise focus session</span></label>
+                      </div>
+                      <div class="n-note-card">
+                        <div class="n-note-title"><span>Quick Snippet</span></div>
+                        <div style="color:var(--sub); line-height:1.5">
+                          Lines starting with <code>[ ]</code> automatically become interactive checkboxes right on your card.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Page 6: Volume Mixer -->
+                  <div class="notch-page" data-page="mixer">
+                    <div class="n-mixer-list">
+                      <div class="n-mixer-row">
+                        <strong>Master</strong>
+                        <input type="range" min="0" max="100" value="78" aria-label="Master volume" />
+                        <span class="n-mixer-val">78%</span>
+                      </div>
+                      <div class="n-mixer-row">
+                        <span>Spotify</span>
+                        <input type="range" min="0" max="100" value="62" aria-label="Spotify volume" />
+                        <span class="n-mixer-val">62%</span>
+                      </div>
+                      <div class="n-mixer-row">
+                        <span>Browser</span>
+                        <input type="range" min="0" max="100" value="85" aria-label="Browser volume" />
+                        <span class="n-mixer-val">85%</span>
+                      </div>
+                      <div class="n-mixer-row">
+                        <span>Discord</span>
+                        <input type="range" min="0" max="100" value="90" aria-label="Discord volume" />
+                        <span class="n-mixer-val">90%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Right-Side Dots -->
+                  <div class="notch-dots" role="tablist" aria-label="Notch pages">
+                    <button class="notch-dot active" type="button" role="tab" aria-selected="true" data-dot="clock" title="Clock"></button>
+                    <button class="notch-dot" type="button" role="tab" aria-selected="false" data-dot="weather" title="Weather"></button>
+                    <button class="notch-dot" type="button" role="tab" aria-selected="false" data-dot="media" title="Now Playing"></button>
+                    <button class="notch-dot" type="button" role="tab" aria-selected="false" data-dot="focus" title="Focus"></button>
+                    <button class="notch-dot" type="button" role="tab" aria-selected="false" data-dot="notes" title="Notes"></button>
+                    <button class="notch-dot" type="button" role="tab" aria-selected="false" data-dot="mixer" title="Volume Mixer"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stage-controls">
+              <div class="stage-hint" id="stage-hint">
+                Click the notch above to reveal it — or jump straight to a page below.
+              </div>
+              <div class="stage-quick-pills">
+                <button class="stage-pill active" type="button" data-demo-page="clock">Clock</button>
+                <button class="stage-pill" type="button" data-demo-page="weather">Weather</button>
+                <button class="stage-pill" type="button" data-demo-page="media">Now Playing</button>
+                <button class="stage-pill" type="button" data-demo-page="focus">Focus</button>
+                <button class="stage-pill" type="button" data-demo-page="notes">Notes</button>
+                <button class="stage-pill" type="button" data-demo-page="mixer">Volume Mixer</button>
+                <button class="stage-pill" type="button" data-demo-page="close">Collapse Pill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 Pages Bento Grid -->
+    <section class="section section-alt" id="pages">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Eight Built-In Pages</span>
+          <h2>Everything you reach for, one click away</h2>
+          <p>
+            Scroll over the notch or click the dots on the right to glide between pages.
+            Turn any page on or off and reorder them in Settings.
+          </p>
+        </div>
+
+        <div class="pages-grid">
+          <article class="page-card reveal" data-delay="1">
+            <div class="page-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3>Clock &amp; World Places</h3>
+            <p>Big time and date with clickable world cities (London, New York, Tokyo, or any city worldwide).</p>
+          </article>
+
+          <article class="page-card reveal" data-delay="2">
+            <div class="page-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+            </div>
+            <h3>Weather</h3>
+            <p>Current temp, feels-like, high/low, wind, next 7 hours and 6 days with rain chance, plus °C/°F toggle.</p>
+          </article>
+
+          <article class="page-card reveal" data-delay="3">
+            <div class="page-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <h3>Now Playing</h3>
+            <p>Artwork, seek bar with time remaining, shuffle, prev/play/next, and repeat via Windows Media or Linux MPRIS.</p>
+          </article>
+
+          <article class="page-card reveal" data-delay="4">
+            <div class="page-icon focus" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4"/><path d="M12 14l4-4"/><circle cx="12" cy="14" r="8"/></svg>
+            </div>
+            <h3>Focus Timer</h3>
+            <p>Pomodoro cycles or single Zen sessions with on-the-fly white, pink, or brown noise generation.</p>
+          </article>
+
+          <article class="page-card reveal" data-delay="1">
+            <div class="page-icon rest" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <h3>Notes</h3>
+            <p>Searchable, pinnable note cards where lines starting with <code>[ ]</code> become clickable checkboxes.</p>
+          </article>
+
+          <article class="page-card reveal" data-delay="2">
+            <div class="page-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+            </div>
+            <h3>Clipboard History</h3>
+            <p>Text, links, images, and files with search, pinning, and pause—automatically skipping password managers.</p>
+          </article>
+
+          <article class="page-card reveal" data-delay="3">
+            <div class="page-icon rest" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+            </div>
+            <h3>Volume Mixer</h3>
+            <p>Master knob, per-app faders with icons, click-to-mute, mic &amp; speaker mute, and active output device.</p>
+          </article>
+
+          <article class="page-card reveal" data-delay="4">
+            <div class="page-icon focus" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+            </div>
+            <h3>Settings &amp; About</h3>
+            <p>Reorder pages, manage login autostart, full-screen tuck behavior, and opt-in daily update checks.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Windows & Linux Native Architecture -->
+    <section class="section" id="platforms">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Cross-Platform Native</span>
+          <h2>First-class on Windows and Linux</h2>
+          <p>
+            Same dark hardware-notch look, same 8 pages, and shared core services—built natively
+            for each desktop’s audio, media, and windowing stack.
+          </p>
+        </div>
+
+        <div class="platforms-grid">
+          <div class="platform-card reveal" data-delay="1">
+            <div class="platform-head">
+              <h3>Windows</h3>
+              <span class="platform-tag">WPF &middot; .NET 10</span>
+            </div>
+            <p>
+              Ships as a single self-contained <code>EasyNotch.exe</code> for 64-bit Windows 10 (1809+) and Windows 11.
+              No installer or .NET runtime required.
+            </p>
+            <ul class="platform-list">
+              <li>Tool window stays out of Alt+Tab and the taskbar with click-through edges</li>
+              <li>Windows Core Audio per-app mixer &amp; GlobalSystemMediaTransportControls</li>
+              <li>Shrinks to a thin line over full-screen apps until you hover it</li>
+              <li>Follows Windows’ native “Animation effects” setting</li>
+            </ul>
+          </div>
+
+          <div class="platform-card linux-card reveal" data-delay="2">
+            <div class="platform-head">
+              <h3>Linux</h3>
+              <span class="platform-tag linux">Avalonia &middot; X11 / Wayland</span>
+            </div>
+            <p>
+              Self-contained <code>EasyNotch-linux-x64.tar.gz</code> installs into <code>~/.local/opt/easy-notch</code>
+              with zero root needed—tested on KDE Plasma 6 (Wayland), GNOME, Cinnamon, XFCE, and tiling WMs.
+            </p>
+            <ul class="platform-list">
+              <li>MPRIS D-Bus media controls for Spotify, Firefox, Chrome, VLC, mpv</li>
+              <li>PulseAudio &amp; PipeWire mixer via <code>pactl</code> and ambient noise via <code>pacat</code></li>
+              <li>StatusNotifierItem tray icon (works on KDE &amp; GNOME AppIndicator)</li>
+              <li>Respects <code>x-kde-passwordManagerHint</code> to keep copied secrets private</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Install Section -->
+    <section class="section section-alt" id="install">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Get Easy Notch</span>
+          <h2>Up and running in under a minute</h2>
+          <p>
+            Download the latest <code>v0.2.0</code> release for Windows or Linux, or build directly with the .NET 10 SDK.
+          </p>
+        </div>
+
+        <div class="install-box reveal reveal-scale">
+          <div class="install-tabs" role="tablist" aria-label="Install platforms">
+            <button class="install-tab active" type="button" role="tab" aria-selected="true" data-install-tab="windows">
+              Windows (.exe)
+            </button>
+            <button class="install-tab" type="button" role="tab" aria-selected="false" data-install-tab="linux">
+              Linux (.tar.gz)
+            </button>
+            <button class="install-tab" type="button" role="tab" aria-selected="false" data-install-tab="distros">
+              Linux Audio Deps
+            </button>
+            <button class="install-tab" type="button" role="tab" aria-selected="false" data-install-tab="source">
+              Build from Source
+            </button>
+          </div>
+
+          <div class="install-body">
+            <!-- Windows -->
+            <div class="install-panel active" data-install-panel="windows" role="tabpanel">
+              <p class="install-note">
+                Requires 64-bit Windows 10 (1809) or Windows 11. No .NET runtime needed.
+              </p>
+              <ol class="install-steps">
+                <li>Download <strong>EasyNotch.exe</strong> from the latest GitHub release.</li>
+                <li>Move it to a permanent folder (e.g. <code>Documents\Easy Notch</code>) so login autostart always finds it.</li>
+                <li>Double-click it. If Windows SmartScreen warns (unsigned binary), choose <strong>More info &rarr; Run anyway</strong>.</li>
+              </ol>
+              <div class="code-block">
+                <button class="copy-btn" type="button">Copy</button>
+                <pre># Optional: jump straight to a specific page from CLI
+EasyNotch.exe --open mixer</pre>
+              </div>
+              <div class="install-foot">
+                <span>Toggle <strong>Start with Windows</strong> any time in Settings.</span>
+                <a class="btn btn-primary btn-sm" href="https://github.com/danny19862025/easy-notch/releases/latest" target="_blank" rel="noopener noreferrer">
+                  Download EasyNotch.exe &rarr;
+                </a>
+              </div>
+            </div>
+
+            <!-- Linux -->
+            <div class="install-panel" data-install-panel="linux" role="tabpanel">
+              <p class="install-note">
+                Works on 64-bit X11 or Wayland (with XWayland). Installs per-user under <code>~/.local/opt/easy-notch</code> with no <code>sudo</code> required.
+              </p>
+              <div class="code-block">
+                <button class="copy-btn" type="button">Copy</button>
+                <pre>cd ~/Downloads
+tar -xzf EasyNotch-linux-x64.tar.gz
+./EasyNotch-linux-x64/install.sh</pre>
+              </div>
+              <div class="install-foot">
+                <span>Use <code>--no-autostart</code> to skip login launch, or run <code>~/.local/opt/easy-notch/uninstall.sh</code> to remove.</span>
+                <a class="btn btn-primary btn-sm" href="https://github.com/danny19862025/easy-notch/releases/latest" target="_blank" rel="noopener noreferrer">
+                  Download Linux Tarball &rarr;
+                </a>
+              </div>
+            </div>
+
+            <!-- Linux Distros -->
+            <div class="install-panel" data-install-panel="distros" role="tabpanel">
+              <p class="install-note">
+                Easy Notch runs without extra packages, while <strong>Volume Mixer</strong> and <strong>Focus noise</strong> use <code>pactl</code> and <code>pacat</code> (which also work with PipeWire):
+              </p>
+              <table class="distro-table">
+                <thead>
+                  <tr>
+                    <th>Distribution</th>
+                    <th>Command</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ubuntu, Mint, Pop!_OS, Debian</td>
+                    <td><code>sudo apt install pulseaudio-utils</code></td>
+                  </tr>
+                  <tr>
+                    <td>Fedora (Workstation, KDE)</td>
+                    <td><code>sudo dnf install pulseaudio-utils</code></td>
+                  </tr>
+                  <tr>
+                    <td>Arch, Manjaro, EndeavourOS, CachyOS</td>
+                    <td><code>sudo pacman -S --needed libpulse</code></td>
+                  </tr>
+                  <tr>
+                    <td>openSUSE (Tumbleweed, Leap)</td>
+                    <td><code>sudo zypper install pulseaudio-utils</code></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="install-foot">
+                <span>On Sway, Hyprland, or i3: add a float rule for window class <code>easy-notch</code>.</span>
+              </div>
+            </div>
+
+            <!-- Source -->
+            <div class="install-panel" data-install-panel="source" role="tabpanel">
+              <p class="install-note">
+                Requires the <strong>.NET 10 SDK</strong>.
+              </p>
+              <div class="code-block">
+                <button class="copy-btn" type="button">Copy</button>
+                <pre># Windows (self-contained single .exe)
+dotnet publish -c Release -o out
+
+# Linux (Avalonia app & self-contained tarball)
+dotnet run --project linux
+linux/publish.sh</pre>
+              </div>
+              <div class="install-foot">
+                <span>Core services (Notes, Weather, Update Check) are shared between Windows and Linux.</span>
+                <a href="https://github.com/danny19862025/easy-notch" target="_blank" rel="noopener noreferrer">
+                  Browse Repository &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy & Local-First -->
+    <section class="section" id="privacy">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Privacy by Design</span>
+          <h2>Your data stays on your machine</h2>
+          <p>
+            No accounts, no cloud sync walls, and no telemetry. Everything lives in one transparent folder on your disk.
+          </p>
+        </div>
+
+        <div class="privacy-grid">
+          <div class="privacy-card reveal" data-delay="1">
+            <div class="privacy-num">01 / LOCAL STORAGE</div>
+            <h3>Notes &amp; Clipboard Stay Local</h3>
+            <p>
+              All settings, notes, and clipboard history are saved strictly in <code>%LOCALAPPDATA%\EasyNotch</code>
+              on Windows or <code>~/.local/share/easy-notch</code> on Linux.
+            </p>
+          </div>
+
+          <div class="privacy-card reveal" data-delay="2">
+            <div class="privacy-num">02 / SECRET PROTECTION</div>
+            <h3>Skips Password Managers</h3>
+            <p>
+              Automatically ignores clipboard entries marked private or secret by password managers
+              (including KeePassXC’s <code>x-kde-passwordManagerHint</code> on Linux).
+            </p>
+          </div>
+
+          <div class="privacy-card reveal" data-delay="3">
+            <div class="privacy-num">03 / MINIMAL NETWORK</div>
+            <h3>Keyless Weather &amp; Opt-In Updates</h3>
+            <p>
+              Uses keyless <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+              for forecasts (cached offline) and GitHub’s public releases API at most once a day—never auto-downloading binaries.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="brand" href="#top">
+          <img class="brand-icon" src="assets/easynotch.png" alt="Easy Notch icon" width="28" height="28" />
+          <span>Easy Notch</span>
+        </a>
+        <div class="footer-meta">
+          Open-source desktop notch for Windows &amp; Linux &middot; Built by danny19862025
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://github.com/danny19862025/easy-notch" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/danny19862025/easy-notch/releases/latest" target="_blank" rel="noopener noreferrer">Releases (v0.2.0)</a>
+        <a href="https://github.com/danny19862025/easy-notch/issues" target="_blank" rel="noopener noreferrer">Issues</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
