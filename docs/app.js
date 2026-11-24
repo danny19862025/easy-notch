@@ -86,8 +86,10 @@
   const pageLabel = document.getElementById("notch-page-label");
   const dots = document.querySelectorAll(".notch-dot");
   const pages = document.querySelectorAll(".notch-page");
-  const dockPills = document.querySelectorAll(".dock-pill");
+  const dockPills = document.querySelectorAll(".dock-pill[data-dock]");
   const chapters = document.querySelectorAll(".chapter-card");
+  const autoBarFill = document.getElementById("notch-auto-fill");
+  const autoSlideBtn = document.getElementById("auto-slide-btn");
 
   const pageOrder = ["clock", "weather", "media", "focus", "notes", "mixer"];
   const pageMeta = {
@@ -101,6 +103,39 @@
   };
 
   let activeIndex = 0;
+  let autoSlideEnabled = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let isHoveringNotch = false;
+  let autoSlideTimer = null;
+  const SLIDE_MS = 3600;
+
+  function restartAutoProgressBar() {
+    if (!autoBarFill) return;
+    autoBarFill.classList.remove("running");
+    void autoBarFill.offsetWidth; // trigger reflow for smooth restart
+    if (autoSlideEnabled && !isHoveringNotch && notch?.classList.contains("expanded")) {
+      autoBarFill.classList.add("running");
+    }
+  }
+
+  function stopAutoTimer() {
+    if (autoSlideTimer) {
+      clearTimeout(autoSlideTimer);
+      autoSlideTimer = null;
+    }
+    if (autoBarFill) autoBarFill.classList.remove("running");
+  }
+
+  function scheduleNextSlide() {
+    stopAutoTimer();
+    if (!autoSlideEnabled || isHoveringNotch || !notch?.classList.contains("expanded")) {
+      return;
+    }
+    restartAutoProgressBar();
+    autoSlideTimer = setTimeout(() => {
+      const nextIdx = (activeIndex + 1) % pageOrder.length;
+      showNotchState(pageOrder[nextIdx]);
+    }, SLIDE_MS);
+  }
 
   function setStageRGB(key) {
     const meta = pageMeta[key] || pageMeta.clock;
@@ -118,6 +153,7 @@
 
   function showNotchState(stateKey) {
     if (stateKey === "pill") {
+      stopAutoTimer();
       if (notch) {
         notch.classList.remove("expanded");
         notch.setAttribute("aria-expanded", "false");
@@ -136,7 +172,12 @@
       notch.setAttribute("aria-expanded", "true");
     }
 
-    pages.forEach((p) => p.classList.toggle("active", p.dataset.page === stateKey));
+    pages.forEach((p) => {
+      const pIdx = pageOrder.indexOf(p.dataset.page);
+      const isAct = pIdx === idx;
+      p.classList.toggle("active", isAct);
+      p.classList.toggle("is-prev", pIdx < idx);
+    });
     dots.forEach((d) => {
       const act = d.dataset.dot === stateKey;
       d.classList.toggle("active", act);
@@ -145,7 +186,41 @@
     if (pageLabel) pageLabel.textContent = pageMeta[stateKey]?.label || stateKey;
     setStageRGB(stateKey);
     highlightChapter(stateKey);
+    scheduleNextSlide();
   }
+
+  if (autoSlideBtn) {
+    autoSlideBtn.addEventListener("click", () => {
+      autoSlideEnabled = !autoSlideEnabled;
+      autoSlideBtn.textContent = autoSlideEnabled ? "Auto ●" : "Auto ○";
+      autoSlideBtn.classList.toggle("active", autoSlideEnabled);
+      if (autoSlideEnabled) {
+        if (!notch?.classList.contains("expanded")) {
+          showNotchState(pageOrder[activeIndex]);
+        } else {
+          scheduleNextSlide();
+        }
+      } else {
+        stopAutoTimer();
+      }
+    });
+  }
+
+  if (notch) {
+    notch.addEventListener("pointerenter", () => {
+      isHoveringNotch = true;
+      stopAutoTimer();
+    });
+    notch.addEventListener("pointerleave", () => {
+      isHoveringNotch = false;
+      scheduleNextSlide();
+    });
+  }
+
+  // Kick off the reveal: start expanded on Clock and auto-slide smoothly
+  setTimeout(() => {
+    showNotchState("clock");
+  }, 650);
 
   // Click interactions on notch, dots, dock, and chapters
   if (notch) {
@@ -209,7 +284,9 @@
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const key = entry.target.dataset.chapter;
-            if (key) showNotchState(key);
+            if (key && !(key === "pill" && autoSlideEnabled)) {
+              showNotchState(key);
+            }
           }
         });
       },

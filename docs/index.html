@@ -172,6 +172,7 @@
                   </div>
 
                   <div class="notch-body-row">
+                    <div class="notch-pages-viewport">
                     <!-- Clock -->
                     <div class="notch-page active" data-page="clock">
                       <div class="n-clock-grid">
@@ -311,6 +312,7 @@
                         </div>
                       </div>
                     </div>
+                    </div><!-- /.notch-pages-viewport -->
 
                     <!-- Right Dots -->
                     <div class="notch-dots" role="tablist" aria-label="Notch pages">
@@ -323,17 +325,21 @@
                     </div>
                   </div>
                 </div>
+                <div class="notch-auto-bar" aria-hidden="true">
+                  <div class="notch-auto-fill" id="notch-auto-fill"></div>
+                </div>
               </div>
 
               <!-- Quick Dock Switcher -->
               <div class="monitor-dock" aria-label="Jump to notch state">
-                <button class="dock-pill active" type="button" data-dock="pill">Pill</button>
-                <button class="dock-pill" type="button" data-dock="clock">Clock</button>
+                <button class="dock-pill" type="button" data-dock="pill">Pill</button>
+                <button class="dock-pill active" type="button" data-dock="clock">Clock</button>
                 <button class="dock-pill" type="button" data-dock="weather">Weather</button>
                 <button class="dock-pill" type="button" data-dock="media">Media</button>
                 <button class="dock-pill" type="button" data-dock="focus">Focus</button>
                 <button class="dock-pill" type="button" data-dock="notes">Notes</button>
                 <button class="dock-pill" type="button" data-dock="mixer">Mixer</button>
+                <button class="dock-pill active" id="auto-slide-btn" type="button" title="Toggle auto-slide">Auto ●</button>
               </div>
             </div>
           </div>

@@ -751,21 +751,75 @@ code, pre {
   min-height: 0;
 }
 
+.notch-pages-viewport {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
 .notch-page {
-  display: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 0;
-  animation: pageSnap 0.36s var(--ease-expo);
+  opacity: 0;
+  transform: translateY(34px) scale(0.97);
+  filter: blur(4px);
+  pointer-events: none;
+  transition:
+    transform 0.56s var(--ease-spring),
+    opacity 0.44s var(--ease-expo),
+    filter 0.44s ease;
+  will-change: transform, opacity;
+}
+
+.notch-page.is-prev {
+  opacity: 0;
+  transform: translateY(-34px) scale(0.97);
+  filter: blur(4px);
 }
 
 .notch-page.active {
-  display: flex;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  pointer-events: auto;
+  z-index: 2;
 }
 
-@keyframes pageSnap {
-  from { opacity: 0; transform: translateY(10px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+/* Auto-slide progress bar along bottom edge of expanded notch */
+.notch-auto-bar {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.notch-shell.expanded .notch-auto-bar {
+  opacity: 1;
+}
+
+.notch-auto-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--rest));
+  border-radius: 99px;
+}
+
+.notch-auto-fill.running {
+  animation: autoSlideFill 3.6s linear forwards;
+}
+
+@keyframes autoSlideFill {
+  from { width: 0%; }
+  to { width: 100%; }
 }
 
 .notch-dots {
