@@ -38,6 +38,7 @@ public partial class SettingsPage : UserControl, IPage
         BuildPlaces();
         Startup.IsChecked = StartWithWindows.IsOn;
         Tuck.IsChecked = _ctx.Settings.TuckOverFullScreen;
+        Magnet.IsChecked = _ctx.Settings.AutoHideWhenCovered;
         AutoUpdate.IsChecked = _ctx.Settings.CheckForUpdates;
         ShowUnit();
     }
@@ -200,6 +201,12 @@ public partial class SettingsPage : UserControl, IPage
     {
         try { StartWithWindows.Set(Startup.IsChecked == true); }
         catch { Startup.IsChecked = StartWithWindows.IsOn; }
+    }
+
+    void Magnet_Click(object sender, RoutedEventArgs e)
+    {
+        _ctx.Settings.AutoHideWhenCovered = Magnet.IsChecked == true;
+        _ctx.Settings.Save();
     }
 
     void Tuck_Click(object sender, RoutedEventArgs e)

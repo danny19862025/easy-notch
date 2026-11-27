@@ -89,6 +89,8 @@ public partial class IslandWindow : Window
         _weather.Changed += () => UpdateCompact();
         _focus.PhaseEnded += _ => { if (!_expanded && IsOn("focus")) Expand("focus"); };
         _tick.Tick += (_, _) => OnTick();
+        _magnet.Tick += (_, _) => CheckMagnet();
+        _magnet.Start();
 
         BuildOrder();
         _current = _order.FirstOrDefault() ?? "about";
@@ -119,7 +121,6 @@ public partial class IslandWindow : Window
 
     void OnTick()
     {
-        CheckFullScreen();
         if (_expanded) _pages[_current].Page.OnTick();
         else if (!_focus.IsRunning) UpdateCompact(); // keeps the compact clock current
     }
@@ -291,48 +292,86 @@ public partial class IslandWindow : Window
         e.Handled = true;
     }
 
-    void Notch_MouseEnter(object sender, MouseEventArgs e)
-    {
-        _hovering = true;
-        if (_tucked) UpdateCompact(force: true);
-    }
+    // The magnet poll (below) decides when a tucked notch is revealed; these just react sooner.
+    void Notch_MouseEnter(object sender, MouseEventArgs e) => CheckMagnet();
+    void Notch_MouseLeave(object sender, MouseEventArgs e) => CheckMagnet();
 
-    void Notch_MouseLeave(object sender, MouseEventArgs e)
-    {
-        _hovering = false;
-        if (_tucked) UpdateCompact(force: true);
-    }
+    // ---------------------------------------------------------------- magnet auto-hide
+    //
+    // The notch tucks itself into a thin line at the top edge when the window you're using
+    // overlaps its spot (a maximized window, one dragged to the top) or is full screen.
+    // Bringing the mouse to the top edge near it pulls it back out like a magnet; it tucks
+    // away again shortly after the mouse leaves.
 
-    // ---------------------------------------------------------------- full-screen tuck
+    readonly DispatcherTimer _magnet = new() { Interval = TimeSpan.FromMilliseconds(120) };
+    DateTime _lastNear;
 
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] static extern bool GetWindowRect(IntPtr h, out RECT r);
+    [DllImport("user32.dll")] static extern bool GetCursorPos(out POINT p);
+    [DllImport("user32.dll")] static extern bool IsIconic(IntPtr h);
+    [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr h);
+    [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
     [DllImport("user32.dll")] static extern IntPtr MonitorFromWindow(IntPtr h, uint flags);
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern bool GetMonitorInfo(IntPtr m, ref MONITORINFO mi);
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetClassName(IntPtr h, StringBuilder s, int n);
     [StructLayout(LayoutKind.Sequential)] struct RECT { public int L, T, R, B; }
+    [StructLayout(LayoutKind.Sequential)] struct POINT { public int X, Y; }
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     struct MONITORINFO { public int cbSize; public RECT rcMonitor, rcWork; public uint dwFlags; }
 
-    void CheckFullScreen()
+    static readonly uint OwnPid = (uint)Environment.ProcessId;
+
+    void CheckMagnet()
     {
-        bool full = false;
-        if (_settings.TuckOverFullScreen && !_expanded)
+        if (_expanded) return;
+        var self = new WindowInteropHelper(this).Handle;
+        if (self == IntPtr.Zero || !GetWindowRect(self, out var me)) return;
+        double scale = VisualTreeHelper.GetDpi(this).DpiScaleX;
+
+        // Where the notch sits when it's showing (compact size), in screen pixels.
+        int cx = (me.L + me.R) / 2;
+        int half = (int)((Math.Max(_compactW, 170) / 2 + NotchBorder.Shoulder) * scale);
+        var zone = new RECT { L = cx - half, T = me.T, R = cx + half, B = me.T + (int)((CompactH + 4) * scale) };
+
+        // 1) Is the window being used covering that spot (or full screen)?
+        bool covered = false;
+        var fg = GetForegroundWindow();
+        if (fg != IntPtr.Zero && fg != self && IsWindowVisible(fg) && !IsIconic(fg)
+            && GetWindowThreadProcessId(fg, out uint pid) != 0 && pid != OwnPid && GetWindowRect(fg, out var r))
         {
-            var self = new WindowInteropHelper(this).Handle;
-            var fg = GetForegroundWindow();
-            if (fg != IntPtr.Zero && fg != self && GetWindowRect(fg, out var r))
+            var cls = new StringBuilder(64);
+            GetClassName(fg, cls, cls.Capacity);
+            bool shell = cls.ToString() is "Progman" or "WorkerW" or "Shell_TrayWnd" or "Shell_SecondaryTrayWnd";
+            if (!shell && MonitorFromWindow(fg, 2) == MonitorFromWindow(self, 2))
             {
-                var cls = new StringBuilder(64);
-                GetClassName(fg, cls, cls.Capacity);
-                bool shell = cls.ToString() is "Progman" or "WorkerW" or "Shell_TrayWnd";
-                var mon = MonitorFromWindow(fg, 2);
                 var mi = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
-                full = !shell && mon == MonitorFromWindow(self, 2) && GetMonitorInfo(mon, ref mi)
-                       && r.L <= mi.rcMonitor.L && r.T <= mi.rcMonitor.T && r.R >= mi.rcMonitor.R && r.B >= mi.rcMonitor.B;
+                bool full = GetMonitorInfo(MonitorFromWindow(fg, 2), ref mi)
+                            && r.L <= mi.rcMonitor.L && r.T <= mi.rcMonitor.T && r.R >= mi.rcMonitor.R && r.B >= mi.rcMonitor.B;
+                bool overlaps = r.L < zone.R && r.R > zone.L && r.T < zone.B && r.B > zone.T;
+                covered = (full && _settings.TuckOverFullScreen) || (overlaps && _settings.AutoHideWhenCovered);
             }
         }
-        if (full != _tucked) { _tucked = full; UpdateCompact(force: true); }
+
+        // 2) Is the mouse pulling it out? Touching the top edge near it reveals; staying
+        //    over the revealed notch keeps it out; it tucks back ~0.4 s after leaving.
+        bool near = false;
+        if (covered && GetCursorPos(out var c))
+        {
+            int grab = (int)(140 * scale);
+            bool atEdge = c.Y <= me.T + (int)(3 * scale) && c.X >= cx - half - grab && c.X <= cx + half + grab;
+            bool overNotch = c.X >= zone.L - 12 && c.X <= zone.R + 12 && c.Y >= zone.T && c.Y <= zone.B + (int)(10 * scale);
+            near = atEdge || (_hovering && overNotch);
+            if (near) _lastNear = DateTime.UtcNow;
+        }
+        bool reveal = near || (_hovering && (DateTime.UtcNow - _lastNear).TotalMilliseconds < 400);
+
+        if (covered != _tucked || reveal != _hovering)
+        {
+            _tucked = covered;
+            _hovering = reveal;
+            UpdateCompact(force: true);
+        }
     }
 
     // ---------------------------------------------------------------- compact view

@@ -96,11 +96,13 @@ Notes for each desktop:
 | **Volume Mixer** | Master knob (drag or scroll), a fader per app with its icon (click the icon to mute), speaker and mic mute, and the output device name. |
 | **About** | Version, a link to the GitHub repo, and *Check for updates* (also checked automatically once a day; it only tells you and links to the release page, it never downloads anything). |
 
-Settings open in their own window (gear buttons, the About page, or the tray icon): turn pages on/off and reorder them, add clock places (any city worldwide), start with Windows, tuck away over full-screen apps, automatic update checks.
+Settings open in their own window (gear buttons, the About page, or the tray icon): turn pages on/off and reorder them, add clock places (any city worldwide), start with Windows, tuck away over full-screen apps, hide when a window covers it (magnet), automatic update checks.
 
 The notch stays out of the way: it's a tool window (not in Alt+Tab or the taskbar),
 its transparent area passes clicks through, animations follow Windows' "Animation
-effects" setting, and over a full-screen app it shrinks to a thin line until you hover it.
+effects" setting, and it auto-hides like a magnet: when the window you are using covers its spot
+(a maximized window, or one dragged to the top) or is full screen, it shrinks to a thin line;
+touch the top edge near it with the mouse and it pops back out, then tucks away again when you leave.
 The tray icon has Open, Settings and Quit.
 
 ## Your data

@@ -35,6 +35,8 @@
                 </DockPanel>
                 <CheckBox x:Name="Startup" Content="Start with Windows" Margin="0,0,0,10" Click="Startup_Click"/>
                 <CheckBox x:Name="Tuck" Content="Tuck away over full-screen apps" Margin="0,0,0,10" Click="Tuck_Click"/>
+                <CheckBox x:Name="Magnet" Content="Hide when a window covers it" Margin="0,0,0,10" Click="Magnet_Click"
+                          ToolTip="Move the mouse to the top edge to pull it back out"/>
                 <CheckBox x:Name="AutoUpdate" Content="Check for updates automatically" Margin="0,0,0,12" Click="AutoUpdate_Click"/>
                 <StackPanel Orientation="Horizontal">
                     <Button Style="{StaticResource PillBtn}" Content="Data folder" Click="Data_Click"/>

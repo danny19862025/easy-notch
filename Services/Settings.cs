@@ -32,6 +32,8 @@ public sealed class Settings
     public int BreakMinutes { get; set; } = 5;
     public string Noise { get; set; } = "off";
     public bool TuckOverFullScreen { get; set; } = true;
+    /// <summary>Tuck into a thin line when the window in use overlaps the notch; the mouse at the top edge pulls it back out.</summary>
+    public bool AutoHideWhenCovered { get; set; } = true;
     /// <summary>"pomodoro": focus then break, repeating. "zen": one focus session.</summary>
     public string FocusMode { get; set; } = "pomodoro";
     public bool ClipboardPaused { get; set; }

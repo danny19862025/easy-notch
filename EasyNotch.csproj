@@ -13,7 +13,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\easynotch.ico</ApplicationIcon>
     <Product>Easy Notch</Product>
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
 
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
